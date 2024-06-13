@@ -36,11 +36,6 @@ class Artists(TypedDict):
     StartIndex: 0
 
 
-"""
-search_media_items
-"""
-
-
 class Connection:
     def __init__(self, url: str, user_id: str, device_id: str, access_token: str):
         self.base_url = url
@@ -51,7 +46,7 @@ class Connection:
         self._access_token = access_token
         self._device_id = device_id
 
-    async def _get_json(self, url, params):
+    async def _get_json(self, url: str, params: dict[str, str|int]):
         resp = await self._session.get(
             url,
             params=params,
@@ -102,6 +97,22 @@ class Connection:
             },
         )
         return resp
+    
+    async def search_media_items(self, term=None, year=None, media=None, limit=20, parent_id=None) -> Any:
+        params = {
+            'Recursive': "True",
+            'Limit': limit,
+        }
+        if term:
+            params["searchTerm"] = term
+        if year:
+            params["years"] = year
+        if media:
+            params["IncludeItemTypes"] = media
+        if parent_id:
+            params["parentId"] = parent_id
+
+        return await self.user_items(params=params)
 
     def _build_url(self, url: str, params: dict[str, str | int]) -> str:
         url = url.strip("/")
