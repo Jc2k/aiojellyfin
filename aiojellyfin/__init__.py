@@ -1,7 +1,8 @@
-import uuid
-from aiohttp import ClientSession
-from typing import LiteralString, TypedDict, Required, cast
 import urllib
+import uuid
+from typing import LiteralString, Required, TypedDict, cast
+
+from aiohttp import ClientSession
 
 
 class MediaLibrary(TypedDict, total=False):
@@ -107,13 +108,12 @@ class Connection:
 
         encoded = urllib.parse.urlencode(params)
 
-        payload = f"{self.base_url}Audio/{item_id}/universal?{encoded}"
+        return f"{self.base_url}Audio/{item_id}/universal?{encoded}"
 
-        return payload
 
 
 def _get_authenication_header(
-    name: str, device: str, device_id: str, version: str, token: str = None
+    name: str, device: str, device_id: str, version: str, token: str | None = None
 ) -> str:
     params = {"Client": name, "Device": device, "DeviceId": device_id, "Version": version}
     if token:
