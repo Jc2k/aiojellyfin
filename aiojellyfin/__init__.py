@@ -1,6 +1,7 @@
 import urllib
 import uuid
 from typing import Any, Final, LiteralString, Required, TypedDict, cast
+from dataclasses import dataclass
 
 from aiohttp import ClientSession
 
@@ -36,15 +37,36 @@ class Artists(TypedDict):
     StartIndex: 0
 
 
+@dataclass
+class SessionConfiguration:
+
+    url: str
+    app_name: str
+    app_version: str
+    device_name: str
+    device_id: str
+
+    @property
+    def user_agent(self) -> str:
+        return f"{self.app_name}/{self.app_version}"
+
+    def authentication_header(self, api_token: str|None = None) -> str:
+        params = {"Client": self.app_namename, "Device": self.device_name, "DeviceId": self.device_id, "Version": self.app_version}
+        if api_token:
+            params["Token"] = api_token
+        param_line = ", ".join(f'{k}="{v}"' for k, v in params.items())
+        return f"MediaBrowser {param_line}"
+
+
 class Connection:
-    def __init__(self, url: str, user_id: str, device_id: str, access_token: str):
-        self.base_url = url
+    def __init__(self, session_config: SessionConfiguration, user_id: str, access_token: str):
+        self._session_config = session_config
+        self.base_url = session_config.url
         self._session = ClientSession(
-            base_url=url,
+            base_url=self.base_url,
         )
         self._user_id = user_id
         self._access_token = access_token
-        self._device_id = device_id
 
     async def _get_json(self, url: str, params: dict[str, str|int]):
         resp = await self._session.get(
@@ -52,14 +74,8 @@ class Connection:
             params=params,
             headers={
                 "Content-Type": "application/json",
-                "User-Agent": "Music Assistant/0.0.0",
-                "Authorization": _get_authenication_header(
-                    "Music Assistant",
-                    "Music Assistant",
-                    str(uuid.uuid4()),
-                    "0.0.0",
-                    self._access_token,
-                ),
+                "User-Agent": self._session_config.user_agent,
+                "Authorization": self._session_config.authentication_header(self._access_token),
             },
             raise_for_status=True,
         )
@@ -135,7 +151,7 @@ class Connection:
     ) -> str:
         params = {
             "UserId": self._user_id,
-            "DeviceId": self._device_id,
+            "DeviceId": self._session_config.device_id,
             "MaxStreamingBitrate": max_streaming_bitrate,
         }
 
@@ -147,20 +163,9 @@ class Connection:
 
         return self._build_url(f"Audio/{item_id}/universal", params)
 
-
-def _get_authenication_header(
-    name: str, device: str, device_id: str, version: str, token: str | None = None
-) -> str:
-    params = {"Client": name, "Device": device, "DeviceId": device_id, "Version": version}
-    if token:
-        params["Token"] = token
-    param_line = ", ".join(f'{k}="{v}"' for k, v in params.items())
-    return f"MediaBrowser {param_line}"
-
-
-async def authenticate_by_name(url: str, username: str, password: str = "") -> Connection:
+async def authenticate_by_name(session_config: SessionConfiguration, username: str, password: str = "") -> Connection:
     session = ClientSession(
-        base_url=url,
+        base_url=session.url,
     )
     async with session:
         res = await session.post(
@@ -168,16 +173,13 @@ async def authenticate_by_name(url: str, username: str, password: str = "") -> C
             json={"Username": username, "Pw": password},
             headers={
                 "Content-Type": "application/json",
-                "User-Agent": "Music Assistant/0.0.0",
-                "Authorization": _get_authenication_header(
-                    "Music Assistant", "Music Assistant", str(uuid.uuid4()), "0.0.0"
-                ),
+                "User-Agent": session_config.user_agent,
+                "Authorization": session_config.authentication_header(),
             },
             raise_for_status=True,
         )
         user_session = await res.json()
 
     user = user_session["User"]
-    session_info = user_session["SessionInfo"]
 
-    return Connection(url, user["Id"], session_info["DeviceId"], user_session["AccessToken"])
+    return Connection(session_config, user["Id"], user_session["AccessToken"])
