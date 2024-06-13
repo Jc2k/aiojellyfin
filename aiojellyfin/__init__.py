@@ -51,7 +51,7 @@ class SessionConfiguration:
         return f"{self.app_name}/{self.app_version}"
 
     def authentication_header(self, api_token: str|None = None) -> str:
-        params = {"Client": self.app_namename, "Device": self.device_name, "DeviceId": self.device_id, "Version": self.app_version}
+        params = {"Client": self.app_name, "Device": self.device_name, "DeviceId": self.device_id, "Version": self.app_version}
         if api_token:
             params["Token"] = api_token
         param_line = ", ".join(f'{k}="{v}"' for k, v in params.items())
@@ -165,7 +165,7 @@ class Connection:
 
 async def authenticate_by_name(session_config: SessionConfiguration, username: str, password: str = "") -> Connection:
     session = ClientSession(
-        base_url=session.url,
+        base_url=session_config.url,
     )
     async with session:
         res = await session.post(
