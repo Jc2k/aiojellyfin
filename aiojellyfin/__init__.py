@@ -88,6 +88,22 @@ class Connection:
             params=params,
         )
 
+    def _build_url(self, url: str, params: dict[str, str | int]) -> str:
+        url = url.strip("/")
+
+        if "api_key" not in params:
+            params["api_key"] = self._access_token
+
+        encoded = urllib.parse.urlencode(params)
+
+        return f"{self.base_url}{url}?{encoded}"
+
+    def artwork(self, item_id: str, art: str, max_width: int, ext: str="jpg", index=None) -> str:
+        params = {"MaxWidth": max_width, "format": ext}
+        if index is None:
+            return self._build_url(f"Items/{item_id}/Images/{art}", params)
+        return self._build_url(f"Items/{item_id}/Images/{art}/{index}", params)
+
     def audio_url(
         self, item_id: str, container=None, audio_codec=None, max_streaming_bitrate=140000000
     ) -> str:
@@ -103,13 +119,7 @@ class Connection:
         if audio_codec:
             params["AudioCodec"] = audio_codec
 
-        if "api_key" not in params:
-            params["api_key"] = self._access_token
-
-        encoded = urllib.parse.urlencode(params)
-
-        return f"{self.base_url}Audio/{item_id}/universal?{encoded}"
-
+        return self._build_url(f"Audio/{item_id}/universal", params)
 
 
 def _get_authenication_header(
