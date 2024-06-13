@@ -1,9 +1,17 @@
 import urllib
 import uuid
-from typing import LiteralString, Required, TypedDict, cast
+from typing import Any, Final, LiteralString, Required, TypedDict, cast
 
 from aiohttp import ClientSession
 
+DEFAULT_FIELDS: Final[str] = (
+        "Path,Genres,SortName,Studios,Writer,Taglines,LocalTrailerCount,"
+        "OfficialRating,CumulativeRunTimeTicks,ItemCounts,"
+        "Metascore,AirTime,DateCreated,People,Overview,"
+        "CriticRating,CriticRatingSummary,Etag,ShortOverview,ProductionLocations,"
+        "Tags,ProviderIds,ParentId,RemoteTrailers,SpecialEpisodeNumbers,"
+        "MediaSources,VoteCount,RecursiveItemCount,PrimaryImageAspectRatio"
+    )
 
 class MediaLibrary(TypedDict, total=False):
     Id: Required[str]
@@ -30,8 +38,6 @@ class Artists(TypedDict):
 
 """
 search_media_items
-get_item
-artwork
 """
 
 
@@ -87,6 +93,15 @@ class Connection:
             f"/Items{handler}",
             params=params,
         )
+
+    async def get_item(self, item_id: str) -> Any:
+        resp = await self._get_json(
+            f"/Users/{self._user_id}/Items/{item_id}",
+            params={
+                "Fields": DEFAULT_FIELDS,
+            },
+        )
+        return resp
 
     def _build_url(self, url: str, params: dict[str, str | int]) -> str:
         url = url.strip("/")
