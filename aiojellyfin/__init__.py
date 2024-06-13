@@ -40,11 +40,14 @@ class Artists(TypedDict):
 @dataclass
 class SessionConfiguration:
 
+    session: ClientSession
     url: str
     app_name: str
     app_version: str
     device_name: str
     device_id: str
+
+    verify_ssl: bool = True
 
     @property
     def user_agent(self) -> str:
@@ -61,22 +64,21 @@ class SessionConfiguration:
 class Connection:
     def __init__(self, session_config: SessionConfiguration, user_id: str, access_token: str):
         self._session_config = session_config
-        self.base_url = session_config.url
-        self._session = ClientSession(
-            base_url=self.base_url,
-        )
+        self._session = session_config.session
+        self.base_url = session_config.url.rstrip("/")
         self._user_id = user_id
         self._access_token = access_token
 
     async def _get_json(self, url: str, params: dict[str, str|int]):
         resp = await self._session.get(
-            url,
+            f"{self.base_url}{url}",
             params=params,
             headers={
                 "Content-Type": "application/json",
                 "User-Agent": self._session_config.user_agent,
                 "Authorization": self._session_config.authentication_header(self._access_token),
             },
+            ssl=self._session_config.verify_ssl,
             raise_for_status=True,
         )
         return await resp.json()
@@ -131,7 +133,7 @@ class Connection:
         return await self.user_items(params=params)
 
     def _build_url(self, url: str, params: dict[str, str | int]) -> str:
-        url = url.strip("/")
+        assert url.startswith("/")
 
         if "api_key" not in params:
             params["api_key"] = self._access_token
@@ -143,8 +145,8 @@ class Connection:
     def artwork(self, item_id: str, art: str, max_width: int, ext: str="jpg", index=None) -> str:
         params = {"MaxWidth": max_width, "format": ext}
         if index is None:
-            return self._build_url(f"Items/{item_id}/Images/{art}", params)
-        return self._build_url(f"Items/{item_id}/Images/{art}/{index}", params)
+            return self._build_url(f"/Items/{item_id}/Images/{art}", params)
+        return self._build_url(f"/Items/{item_id}/Images/{art}/{index}", params)
 
     def audio_url(
         self, item_id: str, container=None, audio_codec=None, max_streaming_bitrate=140000000
@@ -161,7 +163,7 @@ class Connection:
         if audio_codec:
             params["AudioCodec"] = audio_codec
 
-        return self._build_url(f"Audio/{item_id}/universal", params)
+        return self._build_url(f"/Audio/{item_id}/universal", params)
 
 async def authenticate_by_name(session_config: SessionConfiguration, username: str, password: str = "") -> Connection:
     session = ClientSession(
