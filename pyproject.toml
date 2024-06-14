@@ -35,6 +35,11 @@ packages = ["aiojellyfin"]
 platforms = ["any"]
 zip-safe = false
 
+[tool.semantic_release]
+version_toml = [
+    "pyproject.toml:project.version",
+]
+
 # Not quite yet
 # [tool.setuptools.package-data]
 # aiojellyfin = ["py.typed"]
