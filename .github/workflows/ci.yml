@@ -66,6 +66,12 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Publish package distributions to GitHub Releases
+      uses: python-semantic-release/upload-to-gh-release@v8.7.0
+      if: steps.release.outputs.released == 'true'
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+
   pypi:
     runs-on: ubuntu-latest
     concurrency: release
@@ -84,25 +90,19 @@ jobs:
       with:
         ref: ${{ needs.release.outputs.tag  }}
 
+    - name: Set up Python
+      uses: actions/setup-python@v5.1.0
+      with:
+        python-version: "3.11"
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        python -m pip install --upgrade pip build setuptools
+        pip install . .[test]
+
+    - name: build
+      run: python -m build
+
     - name: Publish package distributions to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
-
-  gh-artifacts:
-    runs-on: ubuntu-latest
-    concurrency: release
-    permissions:
-      id-token: write
-      contents: write
-    needs:
-    - release
-    if: needs.release.outputs.released == 'true'
-
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        ref: ${{ needs.release.outputs.tag  }}
-
-    - name: Publish package distributions to GitHub Releases
-      uses: python-semantic-release/upload-to-gh-release@v8.7.0
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}

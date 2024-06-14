@@ -37,6 +37,9 @@ packages = ["aiojellyfin"]
 platforms = ["any"]
 zip-safe = false
 
+[tool.distutils.bdist_wheel]
+universal = true
+
 [tool.semantic_release]
 version_toml = [
     "pyproject.toml:project.version",
