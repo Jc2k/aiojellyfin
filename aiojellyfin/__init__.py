@@ -172,15 +172,15 @@ class Connection:
     ) -> MediaItems:
         """Search the Jellyfin server."""
         params: dict[str, str | int] = {
-            "Recursive": "True",
-            "Limit": limit,
+            "recursive": "True",
+            "limit": limit,
         }
         if term:
             params["searchTerm"] = term
         if year:
             params["years"] = year
         if media:
-            params["IncludeItemTypes"] = media
+            params["includeItemTypes"] = media
         if parent_id:
             params["parentId"] = parent_id
 
