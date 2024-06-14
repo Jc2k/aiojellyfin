@@ -49,9 +49,6 @@ jobs:
     permissions:
       id-token: write
       contents: write
-    environment:
-      name: pypi
-      url: https://pypi.org/p/aiojellyfin
 
     steps:
     - uses: actions/checkout@v3
