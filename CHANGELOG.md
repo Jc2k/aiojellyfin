@@ -2,6 +2,23 @@
 
 
 
+## v0.0.1 (2024-06-14)
+
+### Chore
+
+* chore: don&#39;t publish to pypi direct from main ([`58c77e6`](https://github.com/Jc2k/aiojellyfin/commit/58c77e66fd4d29a8e5a82faf715ae6d7ebe2e347))
+
+* chore: add gh release workflow ([`00cd418`](https://github.com/Jc2k/aiojellyfin/commit/00cd4189937a10cbd9a48c8a421594f5144e1ade))
+
+* chore: fix typos ([`dd20522`](https://github.com/Jc2k/aiojellyfin/commit/dd20522432672de9337f57c89b92f384325c2632))
+
+* chore: enable mypy checking ([`40a516f`](https://github.com/Jc2k/aiojellyfin/commit/40a516ffaecb32e63d311b613b0d8234cf0daa16))
+
+### Fix
+
+* fix: update query terms to match the Jellyfin schema ([`bffcfa4`](https://github.com/Jc2k/aiojellyfin/commit/bffcfa450ea13c9d6c6923d7a04421f3872f3832))
+
+
 ## v0.0.0 (2024-06-14)
 
 ### Chore
@@ -12,7 +29,7 @@
 
 * chore: add dependencies for ci lint tooling ([`9de64bf`](https://github.com/Jc2k/aiojellyfin/commit/9de64bfa39778db763c2cf6bb2e3f959f0778b9b))
 
-* chore: Remove unused dependency from GH action config ([`9e05e4f`](https://github.com/Jc2k/aiojellyfin/commit/9e05e4f6246a6614e68f52569bacdc982d198fb7))
+* chore: Remove unused dependency fro GH action config ([`9e05e4f`](https://github.com/Jc2k/aiojellyfin/commit/9e05e4f6246a6614e68f52569bacdc982d198fb7))
 
 * chore: Run pre-commit on CI ([`e43879f`](https://github.com/Jc2k/aiojellyfin/commit/e43879fac1f0532f6eb8267e4208b8e74c5cc835))
 
