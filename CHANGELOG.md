@@ -2,6 +2,13 @@
 
 
 
+## v0.0.3 (2024-06-14)
+
+### Fix
+
+* fix: remove stray conditional in release pipeline ([`54f5ecf`](https://github.com/Jc2k/aiojellyfin/commit/54f5ecfb85a14c8f6a01c1bd63eb90c534e6db78))
+
+
 ## v0.0.2 (2024-06-14)
 
 ### Chore
