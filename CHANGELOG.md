@@ -12,7 +12,7 @@
 
 * chore: add dependencies for ci lint tooling ([`9de64bf`](https://github.com/Jc2k/aiojellyfin/commit/9de64bfa39778db763c2cf6bb2e3f959f0778b9b))
 
-* chore: Remove unused dependency fro GH action config ([`9e05e4f`](https://github.com/Jc2k/aiojellyfin/commit/9e05e4f6246a6614e68f52569bacdc982d198fb7))
+* chore: Remove unused dependency from GH action config ([`9e05e4f`](https://github.com/Jc2k/aiojellyfin/commit/9e05e4f6246a6614e68f52569bacdc982d198fb7))
 
 * chore: Run pre-commit on CI ([`e43879f`](https://github.com/Jc2k/aiojellyfin/commit/e43879fac1f0532f6eb8267e4208b8e74c5cc835))
 
