@@ -29,7 +29,7 @@ class MediaLibraries(TypedDict):
 
     Items: list[MediaLibrary]
     TotalRecordCount: int
-    StartIndex: 0
+    StartIndex: int
 
 
 class Artist(TypedDict, total=False):
@@ -42,9 +42,23 @@ class Artist(TypedDict, total=False):
 class Artists(TypedDict):
     """JSON data describing a collection of artists."""
 
-    Items: list[MediaLibrary]
+    Items: list[Artist]
     TotalRecordCount: int
-    StartIndex: 0
+    StartIndex: int
+
+
+class MediaItem(TypedDict, total=False):
+    """JSON data describing a single media item."""
+
+    Id: Required[str]
+
+
+class MediaItems(TypedDict):
+    """JSON data describing a collection of media items."""
+
+    Items: list[MediaItem]
+    TotalRecordCount: int
+    StartIndex: int
 
 
 @dataclass
@@ -90,7 +104,7 @@ class Connection:
         self._user_id = user_id
         self._access_token = access_token
 
-    async def _get_json(self, url: str, params: dict[str, str | int]):
+    async def _get_json(self, url: str, params: dict[str, str | int]) -> dict[str, Any]:
         resp = await self._session.get(
             f"{self.base_url}{url}",
             params=params,
@@ -102,11 +116,11 @@ class Connection:
             ssl=self._session_config.verify_ssl,
             raise_for_status=True,
         )
-        return await resp.json()
+        return cast(dict[str, Any], await resp.json())
 
-    async def get_media_folders(self, fields=None) -> MediaLibraries:
+    async def get_media_folders(self, fields: str | None = None) -> MediaLibraries:
         """Fetch a list of media libraries."""
-        params = {}
+        params: dict[str, str | int] = {}
         if fields:
             params["fields"] = fields
         resp = await self._get_json("/Items", params=params)
@@ -123,28 +137,41 @@ class Connection:
         )
         return cast(Artists, resp)
 
-    async def user_items(self, handler: LiteralString = "", params=None):
+    async def user_items(
+        self, handler: LiteralString = "", params: dict[str, str | int] | None = None
+    ) -> MediaItems:
         """Query UserItems."""
         # This will be removed ASAP with something with more typing
-        return await self._get_json(
-            f"/Items{handler}",
-            params=params,
+        return cast(
+            MediaItems,
+            await self._get_json(
+                f"/Items{handler}",
+                params=params or {},
+            ),
         )
 
-    async def get_item(self, item_id: str) -> Any:
+    async def get_item(self, item_id: str) -> MediaItem:
         """Fetch data about a single item in Jellyfin."""
-        return await self._get_json(
-            f"/Users/{self._user_id}/Items/{item_id}",
-            params={
-                "Fields": DEFAULT_FIELDS,
-            },
+        return cast(
+            MediaItem,
+            await self._get_json(
+                f"/Users/{self._user_id}/Items/{item_id}",
+                params={
+                    "Fields": DEFAULT_FIELDS,
+                },
+            ),
         )
 
     async def search_media_items(
-        self, term=None, year=None, media=None, limit=20, parent_id=None
-    ) -> Any:
+        self,
+        term: str | None = None,
+        year: int | None = None,
+        media: str | None = None,
+        limit: int = 20,
+        parent_id: str | None = None,
+    ) -> MediaItems:
         """Search the Jellyfin server."""
-        params = {
+        params: dict[str, str | int] = {
             "Recursive": "True",
             "Limit": limit,
         }
@@ -157,7 +184,7 @@ class Connection:
         if parent_id:
             params["parentId"] = parent_id
 
-        return await self.user_items(params=params)
+        return cast(MediaItems, await self.user_items(params=params))
 
     def _build_url(self, url: str, params: dict[str, str | int]) -> str:
         assert url.startswith("/")
@@ -169,18 +196,24 @@ class Connection:
 
         return f"{self.base_url}{url}?{encoded}"
 
-    def artwork(self, item_id: str, art: str, max_width: int, ext: str = "jpg", index=None) -> str:
+    def artwork(
+        self, item_id: str, art: str, max_width: int, ext: str = "jpg", index: str | None = None
+    ) -> str:
         """Given a TrackId, return a URL to some artwork."""
-        params = {"MaxWidth": max_width, "format": ext}
+        params: dict[str, str | int] = {"MaxWidth": max_width, "format": ext}
         if index is None:
             return self._build_url(f"/Items/{item_id}/Images/{art}", params)
         return self._build_url(f"/Items/{item_id}/Images/{art}/{index}", params)
 
     def audio_url(
-        self, item_id: str, container=None, audio_codec=None, max_streaming_bitrate=140000000
+        self,
+        item_id: str,
+        container: str | None = None,
+        audio_codec: str | None = None,
+        max_streaming_bitrate: int = 140000000,
     ) -> str:
         """Given a TrackId, return a URL to stream from."""
-        params = {
+        params: dict[str, str | int] = {
             "UserId": self._user_id,
             "DeviceId": self._session_config.device_id,
             "MaxStreamingBitrate": max_streaming_bitrate,
