@@ -2,6 +2,21 @@
 
 
 
+## v0.0.2 (2024-06-14)
+
+### Chore
+
+* chore: fix line ending in GH workflow ([`b74fbca`](https://github.com/Jc2k/aiojellyfin/commit/b74fbca2b905c8e74f82dfbed34799428749cb8c))
+
+* chore: ignore CHANGELOG spellings ([`1a2d722`](https://github.com/Jc2k/aiojellyfin/commit/1a2d72255188f59dc8220ae375fcdab66e902aa3))
+
+### Fix
+
+* fix: rework gh release pipeline ([`6e7d776`](https://github.com/Jc2k/aiojellyfin/commit/6e7d7768d6c851f5362175156485435dce8cdc8e))
+
+* fix: remove environment from ci definition ([`0d12961`](https://github.com/Jc2k/aiojellyfin/commit/0d129613ff657dd3d7db17e77d22b8393354e2e2))
+
+
 ## v0.0.1 (2024-06-14)
 
 ### Chore
