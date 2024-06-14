@@ -2,6 +2,13 @@
 
 
 
+## v0.0.4 (2024-06-14)
+
+### Fix
+
+* fix: build wheels before releasing to pypi ([`c790e28`](https://github.com/Jc2k/aiojellyfin/commit/c790e281488ac9112a39e59d3c83a3df2c07c6cb))
+
+
 ## v0.0.3 (2024-06-14)
 
 ### Fix
