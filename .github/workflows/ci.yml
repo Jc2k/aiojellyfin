@@ -31,7 +31,6 @@ jobs:
   # Make sure commit messages follow the conventional commits convention:
   # https://www.conventionalcommits.org
   commitlint:
-    name: Lint Commit Messages
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -50,6 +49,11 @@ jobs:
       id-token: write
       contents: write
 
+    outputs:
+      released: ${{ steps.release.outputs.released }}
+      version: ${{ steps.release.outputs.version }}
+      tag: ${{ steps.release.outputs.tag }}
+
     steps:
     - uses: actions/checkout@v3
       with:
@@ -59,5 +63,50 @@ jobs:
     - name: Python Semantic Release
       id: release
       uses: python-semantic-release/python-semantic-release@v8.7.0
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+
+  pypi:
+    runs-on: ubuntu-latest
+    concurrency: release
+    permissions:
+      id-token: write
+      contents: write
+    environment:
+      name: pypi
+      url: https://pypi.org/p/aiojellyfin
+    needs:
+    - release
+    if: needs.release.outputs.released == 'true'
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ needs.release.outputs.tag  }}
+
+    - name: Publish package distributions to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      # NOTE: DO NOT wrap the conditional in ${{ }} as it will always evaluate to true.
+      # See https://github.com/actions/runner/issues/1173
+      if: steps.release.outputs.released == 'true'
+
+  gh-artifacts:
+    runs-on: ubuntu-latest
+    concurrency: release
+    permissions:
+      id-token: write
+      contents: write
+    needs:
+    - release
+    if: needs.release.outputs.released == 'true'
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ needs.release.outputs.tag  }}
+
+    - name: Publish package distributions to GitHub Releases
+      uses: python-semantic-release/upload-to-gh-release@v8.7.0
+      if: steps.release.outputs.released == 'true'
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
