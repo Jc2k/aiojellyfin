@@ -14,11 +14,19 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
-        with:
-          python-version: "3.10"
-      - uses: pre-commit/action@v3.0.0
+    - name: Check out code from GitHub
+      uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5.1.0
+      with:
+        python-version: "3.11"
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        python -m pip install --upgrade pip build setuptools
+        pip install . .[test]
+    - name: Lint/test with pre-commit
+      run: SKIP=no-commit-to-branch pre-commit run --all-files
 
   # Make sure commit messages follow the conventional commits convention:
   # https://www.conventionalcommits.org
