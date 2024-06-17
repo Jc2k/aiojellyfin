@@ -2,6 +2,23 @@
 
 
 
+## v0.2.0 (2024-06-17)
+
+### Chore
+
+* chore: revert previous ci change ([`d6a785a`](https://github.com/Jc2k/aiojellyfin/commit/d6a785ae9b468142b53ff1d6aedf61cf828e1230))
+
+* chore: don&#39;t limit commits on main as it is too late ([`9c2f7ac`](https://github.com/Jc2k/aiojellyfin/commit/9c2f7ac49a0af3677af7ab75c9753853fd596491))
+
+### Feature
+
+* feat: Add albums() that can return all albums in library ([`f6470ab`](https://github.com/Jc2k/aiojellyfin/commit/f6470abc6810d64dd42ac856126279d9f8a41af7))
+
+### Fix
+
+* fix: Set recursive so all albums are found ([`89b78da`](https://github.com/Jc2k/aiojellyfin/commit/89b78da1449644e5be8679778ea7c5464b8dd23e))
+
+
 ## v0.1.0 (2024-06-17)
 
 ### Feature
