@@ -94,7 +94,6 @@ class MediaItems(TypedDict):
 class Artist(MediaItem, TypedDict, total=False):
     """JSON data describing a single artist."""
 
-    pass
 
 
 class Artists(TypedDict):
