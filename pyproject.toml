@@ -45,9 +45,8 @@ version_toml = [
     "pyproject.toml:project.version",
 ]
 
-# Not quite yet
-# [tool.setuptools.package-data]
-# aiojellyfin = ["py.typed"]
+[tool.setuptools.package-data]
+aiojellyfin = ["py.typed"]
 
 [tool.ruff]
 fix = true
