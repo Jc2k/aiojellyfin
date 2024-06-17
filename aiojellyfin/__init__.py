@@ -91,11 +91,10 @@ class MediaItems(TypedDict):
     StartIndex: int
 
 
-class Artist(MediaItem, total=False):
+class Artist(MediaItem, TypedDict, total=False):
     """JSON data describing a single artist."""
 
-    Id: Required[str]
-    Name: Required[str]
+    pass
 
 
 class Artists(TypedDict):
