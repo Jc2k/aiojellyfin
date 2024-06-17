@@ -95,7 +95,6 @@ class Artist(MediaItem, TypedDict, total=False):
     """JSON data describing a single artist."""
 
 
-
 class Artists(TypedDict):
     """JSON data describing a collection of artists."""
 
