@@ -2,6 +2,17 @@
 
 
 
+## v0.0.5 (2024-06-17)
+
+### Chore
+
+* chore: fix spelling ([`63651d2`](https://github.com/Jc2k/aiojellyfin/commit/63651d29ecdba207accc4e2748124f3eb791a6fa))
+
+### Fix
+
+* fix: added more typing information ([`8cc3eb5`](https://github.com/Jc2k/aiojellyfin/commit/8cc3eb50e078b0c9e31dbfc6a6c463b8f361d457))
+
+
 ## v0.0.4 (2024-06-14)
 
 ### Fix
