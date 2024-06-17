@@ -2,6 +2,19 @@
 
 
 
+## v0.0.6 (2024-06-17)
+
+### Chore
+
+* chore: ruff format ([`97a6e21`](https://github.com/Jc2k/aiojellyfin/commit/97a6e2124e01a2455f27b5b135747e475baba167))
+
+* chore: ruff check ([`29320a2`](https://github.com/Jc2k/aiojellyfin/commit/29320a2d8967de95532d5acb9104b9d6c534b4fe))
+
+### Fix
+
+* fix: the Artist class should properly subclass MediaItem ([`db597a1`](https://github.com/Jc2k/aiojellyfin/commit/db597a1853034e189fe671375f3f458acfadcfe4))
+
+
 ## v0.0.5 (2024-06-17)
 
 ### Chore
