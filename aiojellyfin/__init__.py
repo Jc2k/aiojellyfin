@@ -17,7 +17,7 @@ DEFAULT_FIELDS: Final[str] = (
 
 
 class MediaStream(TypedDict, total=False):
-    """Information abouta Jellyfin stream."""
+    """Information about a Jellyfin stream."""
 
     Channels: int
     Codec: str
