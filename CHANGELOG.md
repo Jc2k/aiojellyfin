@@ -2,6 +2,13 @@
 
 
 
+## v0.1.0 (2024-06-17)
+
+### Feature
+
+* feat: allow artists() and search_media_items() to set fields and enableUserData on queries ([`f9a528c`](https://github.com/Jc2k/aiojellyfin/commit/f9a528ca06c38b0230fe9b6089c74bbb0e6f8328))
+
+
 ## v0.0.6 (2024-06-17)
 
 ### Chore
