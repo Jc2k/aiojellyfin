@@ -168,14 +168,24 @@ class Connection:
         resp = await self._get_json("/Items", params=params)
         return cast(MediaLibraries, resp)
 
-    async def artists(self, library_id: str) -> Artists:
+    async def artists(
+        self, library_id: str, fields: list[str] | None = None, enable_user_data: bool = False
+    ) -> Artists:
         """Fetch a list of artists."""
+        params: dict[str, str | int] = {
+            "ParentId": library_id,
+            "ArtistType": "Artist,AlbumArtist",
+        }
+
+        if enable_user_data:
+            params["enableUserData"] = "true"
+
+        if fields:
+            params["fields"] = ",".join(fields)
+
         resp = await self._get_json(
             "/Artists",
-            params={
-                "ParentId": library_id,
-                "ArtistType": "Artist,AlbumArtist",
-            },
+            params=params,
         )
         return cast(Artists, resp)
 
@@ -211,6 +221,8 @@ class Connection:
         media: str | None = None,
         limit: int = 20,
         parent_id: str | None = None,
+        fields: list[str] | None = None,
+        enable_user_data: bool = False,
     ) -> MediaItems:
         """Search the Jellyfin server."""
         params: dict[str, str | int] = {
@@ -225,7 +237,10 @@ class Connection:
             params["includeItemTypes"] = media
         if parent_id:
             params["parentId"] = parent_id
-
+        if enable_user_data:
+            params["enableUserData"] = "true"
+        if fields:
+            params["fields"] = ",".join(fields)
         return cast(MediaItems, await self.user_items(params=params))
 
     def _build_url(self, url: str, params: dict[str, str | int]) -> str:
