@@ -103,6 +103,18 @@ class Artists(TypedDict):
     StartIndex: int
 
 
+class Album(MediaItem, TypedDict, total=False):
+    """JSON data describing a single album."""
+
+
+class Albums(TypedDict):
+    """JSON data describing a collection of albums."""
+
+    Items: list[Album]
+    TotalRecordCount: int
+    StartIndex: int
+
+
 @dataclass
 class SessionConfiguration:
     """Configuration needed to connect to a Jellyfin server."""
@@ -188,6 +200,27 @@ class Connection:
             params=params,
         )
         return cast(Artists, resp)
+
+    async def albums(
+        self, library_id: str, fields: list[str] | None = None, enable_user_data: bool = False
+    ) -> Albums:
+        """Return all library matching query."""
+        params: dict[str, str | int] = {
+            "ParentId": library_id,
+            "IncludeItemTypes": "MusicAlbum",
+        }
+
+        if enable_user_data:
+            params["enableUserData"] = "true"
+
+        if fields:
+            params["fields"] = ",".join(fields)
+
+        resp = await self._get_json(
+            "/Items",
+            params=params or {},
+        )
+        return cast(Albums, resp)
 
     async def user_items(
         self, handler: LiteralString = "", params: dict[str, str | int] | None = None
