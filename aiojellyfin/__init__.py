@@ -206,8 +206,9 @@ class Connection:
     ) -> Albums:
         """Return all library matching query."""
         params: dict[str, str | int] = {
-            "ParentId": library_id,
-            "IncludeItemTypes": "MusicAlbum",
+            "parentId": library_id,
+            "includeItemTypes": "MusicAlbum",
+            "recursive": "true",
         }
 
         if enable_user_data:
