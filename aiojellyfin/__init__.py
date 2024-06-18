@@ -207,6 +207,7 @@ class Connection:
     async def artists(
         self,
         library_id: str,
+        start_index: int | None = None,
         limit: int | None = None,
         fields: list[str] | None = None,
         enable_user_data: bool = False,
@@ -216,6 +217,9 @@ class Connection:
             "ParentId": library_id,
             "ArtistType": "Artist,AlbumArtist",
         }
+
+        if start_index:
+            params["startIndex"] = start_index
 
         if limit:
             params["limit"] = limit
@@ -235,6 +239,7 @@ class Connection:
     async def albums(
         self,
         library_id: str,
+        start_index: int | None = None,
         limit: int | None = None,
         fields: list[str] | None = None,
         enable_user_data: bool = False,
@@ -245,6 +250,9 @@ class Connection:
             "includeItemTypes": "MusicAlbum",
             "recursive": "true",
         }
+
+        if start_index:
+            params["startIndex"] = start_index
 
         if limit:
             params["limit"] = limit
@@ -264,6 +272,7 @@ class Connection:
     async def tracks(
         self,
         library_id: str,
+        start_index: int | None = None,
         limit: int | None = None,
         fields: list[str] | None = None,
         enable_user_data: bool = False,
@@ -274,6 +283,9 @@ class Connection:
             "includeItemTypes": "Audio",
             "recursive": "true",
         }
+
+        if start_index:
+            params["startIndex"] = start_index
 
         if limit:
             params["limit"] = limit
@@ -293,6 +305,7 @@ class Connection:
     async def playlists(
         self,
         library_id: str,
+        start_index: int | None = None,
         limit: int | None = None,
         fields: list[str] | None = None,
         enable_user_data: bool = False,
@@ -303,6 +316,9 @@ class Connection:
             "includeItemTypes": "Playlist",
             "recursive": "true",
         }
+
+        if start_index:
+            params["startIndex"] = start_index
 
         if limit:
             params["limit"] = limit
