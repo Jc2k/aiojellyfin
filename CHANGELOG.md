@@ -2,6 +2,19 @@
 
 
 
+## v0.3.0 (2024-06-18)
+
+### Feature
+
+* feat: adds support for startIndex ([`1c41f6f`](https://github.com/Jc2k/aiojellyfin/commit/1c41f6f6a8941bb8a03e88b9e1984459dd1534e7))
+
+* feat: add &#39;limit&#39; option to more endpoints ([`319baf2`](https://github.com/Jc2k/aiojellyfin/commit/319baf27c2188f9fd2f036dc1dad279fb72312d8))
+
+* feat: add typed endpoint for fetching playlists ([`163694f`](https://github.com/Jc2k/aiojellyfin/commit/163694f048044a667c63530730eea3ba31ade320))
+
+* feat: support listing all tracks in a library ([`f5b2690`](https://github.com/Jc2k/aiojellyfin/commit/f5b2690393624aab9b4dfddcc66b079f93ff1a68))
+
+
 ## v0.2.0 (2024-06-17)
 
 ### Chore
