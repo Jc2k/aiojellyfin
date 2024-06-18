@@ -205,13 +205,20 @@ class Connection:
         return cast(MediaLibraries, resp)
 
     async def artists(
-        self, library_id: str, fields: list[str] | None = None, enable_user_data: bool = False
+        self,
+        library_id: str,
+        limit: int | None = None,
+        fields: list[str] | None = None,
+        enable_user_data: bool = False,
     ) -> Artists:
         """Fetch a list of artists."""
         params: dict[str, str | int] = {
             "ParentId": library_id,
             "ArtistType": "Artist,AlbumArtist",
         }
+
+        if limit:
+            params["limit"] = limit
 
         if enable_user_data:
             params["enableUserData"] = "true"
@@ -226,7 +233,11 @@ class Connection:
         return cast(Artists, resp)
 
     async def albums(
-        self, library_id: str, fields: list[str] | None = None, enable_user_data: bool = False
+        self,
+        library_id: str,
+        limit: int | None = None,
+        fields: list[str] | None = None,
+        enable_user_data: bool = False,
     ) -> Albums:
         """Return all library matching query."""
         params: dict[str, str | int] = {
@@ -234,6 +245,9 @@ class Connection:
             "includeItemTypes": "MusicAlbum",
             "recursive": "true",
         }
+
+        if limit:
+            params["limit"] = limit
 
         if enable_user_data:
             params["enableUserData"] = "true"
@@ -248,7 +262,11 @@ class Connection:
         return cast(Albums, resp)
 
     async def tracks(
-        self, library_id: str, fields: list[str] | None = None, enable_user_data: bool = False
+        self,
+        library_id: str,
+        limit: int | None = None,
+        fields: list[str] | None = None,
+        enable_user_data: bool = False,
     ) -> Tracks:
         """Return all library matching query."""
         params: dict[str, str | int] = {
@@ -256,6 +274,9 @@ class Connection:
             "includeItemTypes": "Audio",
             "recursive": "true",
         }
+
+        if limit:
+            params["limit"] = limit
 
         if enable_user_data:
             params["enableUserData"] = "true"
@@ -270,7 +291,11 @@ class Connection:
         return cast(Tracks, resp)
 
     async def playlists(
-        self, library_id: str, fields: list[str] | None = None, enable_user_data: bool = False
+        self,
+        library_id: str,
+        limit: int | None = None,
+        fields: list[str] | None = None,
+        enable_user_data: bool = False,
     ) -> Playlists:
         """Return all library matching query."""
         params: dict[str, str | int] = {
@@ -278,6 +303,9 @@ class Connection:
             "includeItemTypes": "Playlist",
             "recursive": "true",
         }
+
+        if limit:
+            params["limit"] = limit
 
         if enable_user_data:
             params["enableUserData"] = "true"
