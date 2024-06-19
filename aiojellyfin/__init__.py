@@ -7,7 +7,7 @@ from typing import Any, Final, LiteralString, Required, TypedDict, cast
 from aiohttp import ClientResponseError, ClientSession
 from mashumaro.codecs.basic import BasicDecoder
 
-from .const import ItemType
+from .const import ImageType, ItemType
 
 DEFAULT_FIELDS: Final[str] = (
     "Path,Genres,SortName,Studios,Writer,Taglines,LocalTrailerCount,"
@@ -85,7 +85,8 @@ class MediaItem(TypedDict, total=False):
     Album: str
     ParentIndexNumber: int
     ArtistItems: list[ArtistItem]
-    ImageTags: dict[str, str]
+    ImageTags: dict[ImageType, str]
+    BackdropImageTags: list[str]
     UserData: UserData
     AlbumArtists: list[ArtistItem]
     MediaSources: list[MediaSource]
@@ -237,7 +238,9 @@ class Connection:
     ) -> Artists:
         """Fetch a list of artists."""
         params: dict[str, str | int] = {
+            "includeItemTypes": "MusicArtist",
             "ArtistType": "Artist,AlbumArtist",
+            "recursive": "true",
         }
 
         if library_id:
@@ -259,7 +262,7 @@ class Connection:
             params["fields"] = ",".join(fields)
 
         resp = await self._get_json(
-            "/Artists",
+            "/Items",
             params=params,
         )
         return self._artists_decoder.decode(resp)
