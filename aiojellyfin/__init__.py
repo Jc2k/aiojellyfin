@@ -2,9 +2,11 @@
 
 import urllib
 from dataclasses import dataclass
+from enum import StrEnum
 from typing import Any, Final, LiteralString, Required, TypedDict, cast
 
-from aiohttp import ClientSession
+from aiohttp import ClientResponseError, ClientSession
+from mashumaro.codecs.basic import BasicDecoder
 
 DEFAULT_FIELDS: Final[str] = (
     "Path,Genres,SortName,Studios,Writer,Taglines,LocalTrailerCount,"
@@ -14,6 +16,52 @@ DEFAULT_FIELDS: Final[str] = (
     "Tags,ProviderIds,ParentId,RemoteTrailers,SpecialEpisodeNumbers,"
     "MediaSources,VoteCount,RecursiveItemCount,PrimaryImageAspectRatio"
 )
+
+
+class ItemType(StrEnum):
+    """The type of an object in Jellyfin."""
+
+    AggregateFolder = "AggregateFolder"
+    Audio = "Audio"
+    AudioBook = "AudioBook"
+    BasePluginFolder = "BasePluginFolder"
+    Book = "Book"
+    BoxSet = "BoxSet"
+    Channel = "Channel"
+    ChannelFolderItem = "ChannelFolderItem"
+    CollectionFolder = "CollectionFolder"
+    Episode = "Episode"
+    Folder = "Folder"
+    Genre = "Genre"
+    ManualPlaylistsFolder = "ManualPlaylistsFolder"
+    Movie = "Movie"
+    LiveTvChannel = "LiveTvChannel"
+    LiveTvProgram = "LiveTvProgram"
+    MusicAlbum = "MusicAlbum"
+    MusicArtist = "MusicArtist"
+    MusicGenre = "MusicGenre"
+    MusicVideo = "MusicVideo"
+    Person = "Person"
+    Photo = "Photo"
+    PhotoAlbum = "PhotoAlbum"
+    Playlist = "Playlist"
+    PlaylistsFolder = "PlaylistsFolder"
+    Program = "Program"
+    Recording = "Recording"
+    Season = "Season"
+    Series = "Series"
+    Studio = "Studio"
+    Trailer = "Trailer"
+    TvChannel = "TvChannel"
+    TvProgram = "TvProgram"
+    UserRootFolder = "UserRootFolder"
+    UserView = "UserView"
+    Video = "Video"
+    Year = "Year"
+
+
+class NotFound(Exception):
+    """Raised when media cannot be found."""
 
 
 class MediaStream(TypedDict, total=False):
@@ -62,6 +110,7 @@ class MediaItem(TypedDict, total=False):
     """JSON data describing a single media item."""
 
     Id: Required[str]
+    Type: ItemType
     Name: str
     MediaType: str
     IndexNumber: int
@@ -182,18 +231,32 @@ class Connection:
         self._user_id = user_id
         self._access_token = access_token
 
+        # These will go away when we transition to dataclasses
+        self._artists_decoder = BasicDecoder(Artists)
+        self._artist_decoder = BasicDecoder(Artist)
+        self._albums_decoder = BasicDecoder(Albums)
+        self._album_decoder = BasicDecoder(Album)
+        self._tracks_decoder = BasicDecoder(Tracks)
+        self._track_decoder = BasicDecoder(Track)
+        self._playlists_decoder = BasicDecoder(Playlists)
+        self._playlist_decoder = BasicDecoder(Playlist)
+
     async def _get_json(self, url: str, params: dict[str, str | int]) -> dict[str, Any]:
-        resp = await self._session.get(
-            f"{self.base_url}{url}",
-            params=params,
-            headers={
-                "Content-Type": "application/json",
-                "User-Agent": self._session_config.user_agent,
-                "Authorization": self._session_config.authentication_header(self._access_token),
-            },
-            ssl=self._session_config.verify_ssl,
-            raise_for_status=True,
-        )
+        try:
+            resp = await self._session.get(
+                f"{self.base_url}{url}",
+                params=params,
+                headers={
+                    "Content-Type": "application/json",
+                    "User-Agent": self._session_config.user_agent,
+                    "Authorization": self._session_config.authentication_header(self._access_token),
+                },
+                ssl=self._session_config.verify_ssl,
+                raise_for_status=True,
+            )
+        except ClientResponseError as e:
+            if e.status == 404:
+                raise NotFound("Resource not found")
         return cast(dict[str, Any], await resp.json())
 
     async def get_media_folders(self, fields: str | None = None) -> MediaLibraries:
@@ -234,7 +297,7 @@ class Connection:
             "/Artists",
             params=params,
         )
-        return cast(Artists, resp)
+        return self._artists_decoder.decode(resp)
 
     async def albums(
         self,
@@ -267,7 +330,7 @@ class Connection:
             "/Items",
             params=params or {},
         )
-        return cast(Albums, resp)
+        return self._albums_decoder.decode(resp)
 
     async def tracks(
         self,
@@ -300,7 +363,7 @@ class Connection:
             "/Items",
             params=params or {},
         )
-        return cast(Tracks, resp)
+        return self._tracks_decoder.decode(resp)
 
     async def playlists(
         self,
@@ -333,7 +396,7 @@ class Connection:
             "/Items",
             params=params or {},
         )
-        return cast(Playlists, resp)
+        return self._playlists_decoder.decode(resp)
 
     async def user_items(
         self, handler: LiteralString = "", params: dict[str, str | int] | None = None
@@ -359,6 +422,62 @@ class Connection:
                 },
             ),
         )
+
+    async def get_artist(self, artist_id: str) -> Artist:
+        """Fetch all data for a single artist."""
+        artist = self._artist_decoder.decode(
+            await self._get_json(
+                f"/Users/{self._user_id}/Items/{artist_id}",
+                params={
+                    "Fields": DEFAULT_FIELDS,
+                },
+            ),
+        )
+        if artist["Type"] != ItemType.MusicArtist:
+            raise NotFound(artist_id)
+        return artist
+
+    async def get_album(self, album_id: str) -> Album:
+        """Fetch all data for a single album."""
+        album = self._album_decoder.decode(
+            await self._get_json(
+                f"/Users/{self._user_id}/Items/{album_id}",
+                params={
+                    "Fields": DEFAULT_FIELDS,
+                },
+            )
+        )
+        if album["Type"] != ItemType.MusicAlbum:
+            raise NotFound(album_id)
+        return album
+
+    async def get_track(self, track_id: str) -> Track:
+        """Fetch all data for a single track."""
+        track = self._track_decoder.decode(
+            await self._get_json(
+                f"/Users/{self._user_id}/Items/{track_id}",
+                params={
+                    "Fields": DEFAULT_FIELDS,
+                },
+            ),
+        )
+        if track["Type"] != ItemType.Audio:
+            raise NotFound(track_id)
+        return track
+
+    async def get_playlist(self, playlist_id: str) -> Playlist:
+        """Fetch all data for a single playlist."""
+        playlist = self._playlist_decoder.decode(
+            await self._get_json(
+                f"/Users/{self._user_id}/Items/{playlist_id}",
+                params={
+                    "Fields": DEFAULT_FIELDS,
+                },
+            ),
+        )
+        if playlist["Type"] != ItemType.Playlist:
+            raise NotFound(playlist_id)
+        return playlist
 
     async def search_media_items(
         self,
