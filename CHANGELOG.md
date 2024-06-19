@@ -2,6 +2,17 @@
 
 
 
+## v0.6.0 (2024-06-19)
+
+### Chore
+
+* chore: move ItemType into new const module ([`e7fab50`](https://github.com/Jc2k/aiojellyfin/commit/e7fab508c258cccb93878b0529ff2f975b3faaa7))
+
+### Feature
+
+* feat: wrap backdrop handling ([`3cca4e6`](https://github.com/Jc2k/aiojellyfin/commit/3cca4e6a06b3ac02af928a21bb17e73175b177d6))
+
+
 ## v0.5.0 (2024-06-19)
 
 ### Feature
