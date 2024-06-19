@@ -2,6 +2,13 @@
 
 
 
+## v0.4.0 (2024-06-19)
+
+### Feature
+
+* feat: add typed helpers for getting a single artist/album/track/playlist ([`8f199c2`](https://github.com/Jc2k/aiojellyfin/commit/8f199c2472f49761713d1a41f54ce19d5b2e277b))
+
+
 ## v0.3.0 (2024-06-18)
 
 ### Feature
