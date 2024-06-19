@@ -2,6 +2,17 @@
 
 
 
+## v0.7.0 (2024-06-19)
+
+### Chore
+
+* chore: linters ([`7313357`](https://github.com/Jc2k/aiojellyfin/commit/73133577da84419d6275c3d24b1314bfa8711937))
+
+### Feature
+
+* feat: improve artwork url generator ([`eb289d0`](https://github.com/Jc2k/aiojellyfin/commit/eb289d074f0be95906b3b10853691abacd9287db))
+
+
 ## v0.6.0 (2024-06-19)
 
 ### Chore
