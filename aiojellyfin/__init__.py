@@ -505,13 +505,17 @@ class Connection:
         return f"{self.base_url}{url}?{encoded}"
 
     def artwork(
-        self, item_id: str, art: str, max_width: int, ext: str = "jpg", index: str | None = None
+        self, item_id: str, image_type: ImageType, max_width: int | None = None, extension: str | None = None, index: int | None = None
     ) -> str:
         """Given a TrackId, return a URL to some artwork."""
-        params: dict[str, str | int] = {"MaxWidth": max_width, "format": ext}
+        params: dict[str, str | int] = {}
+        if max_width:
+            params["maxWidth"] = max_width
+        if extension:
+            params["format"] = extension
         if index is None:
-            return self._build_url(f"/Items/{item_id}/Images/{art}", params)
-        return self._build_url(f"/Items/{item_id}/Images/{art}/{index}", params)
+            return self._build_url(f"/Items/{item_id}/Images/{str(image_type)}", params)
+        return self._build_url(f"/Items/{item_id}/Images/{str(image_type)}/{index}", params)
 
     def audio_url(
         self,
