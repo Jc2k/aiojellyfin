@@ -2,6 +2,13 @@
 
 
 
+## v0.5.0 (2024-06-19)
+
+### Feature
+
+* feat: make library_id optional and support searching used typed functions ([`e56464a`](https://github.com/Jc2k/aiojellyfin/commit/e56464aae195a831d3a1ad55568c39fee2760d43))
+
+
 ## v0.4.0 (2024-06-19)
 
 ### Feature
