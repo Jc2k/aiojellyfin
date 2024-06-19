@@ -269,7 +269,8 @@ class Connection:
 
     async def artists(
         self,
-        library_id: str,
+        library_id: str | None = None,
+        search_term: str | None = None,
         start_index: int | None = None,
         limit: int | None = None,
         fields: list[str] | None = None,
@@ -277,9 +278,14 @@ class Connection:
     ) -> Artists:
         """Fetch a list of artists."""
         params: dict[str, str | int] = {
-            "ParentId": library_id,
             "ArtistType": "Artist,AlbumArtist",
         }
+
+        if library_id:
+            params["parentId"] = library_id
+
+        if search_term:
+            params["searchTerm"] = search_term
 
         if start_index:
             params["startIndex"] = start_index
@@ -301,7 +307,8 @@ class Connection:
 
     async def albums(
         self,
-        library_id: str,
+        library_id: str | None = None,
+        search_term: str | None = None,
         start_index: int | None = None,
         limit: int | None = None,
         fields: list[str] | None = None,
@@ -309,10 +316,15 @@ class Connection:
     ) -> Albums:
         """Return all library matching query."""
         params: dict[str, str | int] = {
-            "parentId": library_id,
             "includeItemTypes": "MusicAlbum",
             "recursive": "true",
         }
+
+        if library_id:
+            params["parentId"] = library_id
+
+        if search_term:
+            params["searchTerm"] = search_term
 
         if start_index:
             params["startIndex"] = start_index
@@ -334,7 +346,8 @@ class Connection:
 
     async def tracks(
         self,
-        library_id: str,
+        library_id: str | None = None,
+        search_term: str | None = None,
         start_index: int | None = None,
         limit: int | None = None,
         fields: list[str] | None = None,
@@ -342,10 +355,15 @@ class Connection:
     ) -> Tracks:
         """Return all library matching query."""
         params: dict[str, str | int] = {
-            "parentId": library_id,
             "includeItemTypes": "Audio",
             "recursive": "true",
         }
+
+        if library_id:
+            params["parentId"] = library_id
+
+        if search_term:
+            params["searchTerm"] = search_term
 
         if start_index:
             params["startIndex"] = start_index
@@ -367,7 +385,8 @@ class Connection:
 
     async def playlists(
         self,
-        library_id: str,
+        library_id: str | None = None,
+        search_term: str | None = None,
         start_index: int | None = None,
         limit: int | None = None,
         fields: list[str] | None = None,
@@ -375,10 +394,15 @@ class Connection:
     ) -> Playlists:
         """Return all library matching query."""
         params: dict[str, str | int] = {
-            "parentId": library_id,
             "includeItemTypes": "Playlist",
             "recursive": "true",
         }
+
+        if library_id:
+            params["parentId"] = library_id
+
+        if search_term:
+            params["searchTerm"] = search_term
 
         if start_index:
             params["startIndex"] = start_index
