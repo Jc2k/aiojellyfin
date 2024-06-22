@@ -4,7 +4,7 @@ import copy
 from collections import defaultdict
 from collections.abc import Awaitable, Callable
 
-from mashumaro.codecs.basic import BasicDecoder
+from mashumaro.codecs.json import JSONDecoder
 
 from aiojellyfin import (
     Album,
@@ -50,7 +50,7 @@ class FixtureBuilder:
 
     def add_artist_bytes(self, data: str | bytes) -> None:
         """Add an artist to this fixture."""
-        artist = BasicDecoder(Artist).decode(data)
+        artist = JSONDecoder(Artist).decode(data)
         self.add_artist(artist)
 
     def add_album(self, album: Album) -> None:
@@ -64,7 +64,7 @@ class FixtureBuilder:
 
     def add_album_bytes(self, data: str | bytes) -> None:
         """Add an album to this fixture."""
-        album = BasicDecoder(Album).decode(data)
+        album = JSONDecoder(Album).decode(data)
         self.add_album(album)
 
     def add_track(self, track: Track) -> None:
@@ -82,7 +82,7 @@ class FixtureBuilder:
 
     def add_track_bytes(self, data: str | bytes) -> None:
         """Add an track to this fixture."""
-        track = BasicDecoder(Track).decode(data)
+        track = JSONDecoder(Track).decode(data)
         self.add_track(track)
 
     def to_authenticate_by_name(
