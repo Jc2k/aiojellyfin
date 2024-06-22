@@ -85,7 +85,7 @@ class FixtureBuilder:
         track = BasicDecoder(Track).decode(data)
         self.add_track(track)
 
-    def to_authenticate_by_user(
+    def to_authenticate_by_name(
         self,
     ) -> Callable[[SessionConfiguration, str, str], Awaitable[Connection]]:
         """Prepare a monkeypatch."""
