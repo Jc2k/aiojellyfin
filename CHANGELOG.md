@@ -2,6 +2,13 @@
 
 
 
+## v0.8.2 (2024-06-22)
+
+### Fix
+
+* fix: use JSONDecoder when adding fixtures to tests ([`7c089ed`](https://github.com/Jc2k/aiojellyfin/commit/7c089eda6d4bd29d9a50d95cacbefb9b21039482))
+
+
 ## v0.8.1 (2024-06-22)
 
 ### Fix
