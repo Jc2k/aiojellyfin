@@ -77,8 +77,8 @@ class FixtureBuilder:
             self.tracks_parents[track_id].add(artist["Id"])
         for artist in track["ArtistItems"]:
             self.tracks_parents[track_id].add(artist["Id"])
-        if track["AlbumId"]:
-            self.tracks_parents[track_id].add(track["AlbumId"])
+        if album_id := track.get("AlbumId"):
+            self.tracks_parents[track_id].add(album_id)
 
     def add_track_bytes(self, data: str | bytes) -> None:
         """Add an track to this fixture."""
