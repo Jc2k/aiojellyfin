@@ -2,6 +2,13 @@
 
 
 
+## v0.8.0 (2024-06-22)
+
+### Feature
+
+* feat: add framework for testing apps using aiojellyfin ([`5edc68e`](https://github.com/Jc2k/aiojellyfin/commit/5edc68ef23a55d1a34a2d05f79c71391b7a5d2da))
+
+
 ## v0.7.0 (2024-06-19)
 
 ### Chore
