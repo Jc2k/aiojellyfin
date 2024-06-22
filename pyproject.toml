@@ -14,7 +14,7 @@ description = "Async library for Jellyfin"
 license = {text = "Apache-2.0"}
 readme = "README.md"
 requires-python = ">=3.11"
-version = "0.8.2"
+version = "0.8.3"
 
 [project.optional-dependencies]
 test = [

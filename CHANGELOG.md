@@ -2,6 +2,13 @@
 
 
 
+## v0.8.3 (2024-06-22)
+
+### Fix
+
+* fix: the field AlbumId not present in test fixtures that don&#39;t belong to an album ([`aeac337`](https://github.com/Jc2k/aiojellyfin/commit/aeac3375e6ef732ae9e93191c2d0f766ff449e86))
+
+
 ## v0.8.2 (2024-06-22)
 
 ### Fix
