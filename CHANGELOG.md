@@ -2,6 +2,13 @@
 
 
 
+## v0.8.1 (2024-06-22)
+
+### Fix
+
+* fix: fix method name typo ([`97fdec0`](https://github.com/Jc2k/aiojellyfin/commit/97fdec00ff6a9a3d9980cb6bae16729e78e3b785))
+
+
 ## v0.8.0 (2024-06-22)
 
 ### Feature
