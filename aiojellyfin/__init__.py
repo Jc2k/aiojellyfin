@@ -502,35 +502,6 @@ class Connection:
         )
         return self._tracks_decoder.decode(resp)
 
-    async def search_media_items(
-        self,
-        term: str | None = None,
-        year: int | None = None,
-        media: str | None = None,
-        limit: int = 20,
-        parent_id: str | None = None,
-        fields: list[str] | None = None,
-        enable_user_data: bool = False,
-    ) -> MediaItems:
-        """Search the Jellyfin server."""
-        params: dict[str, str | int] = {
-            "recursive": "True",
-            "limit": limit,
-        }
-        if term:
-            params["searchTerm"] = term
-        if year:
-            params["years"] = year
-        if media:
-            params["includeItemTypes"] = media
-        if parent_id:
-            params["parentId"] = parent_id
-        if enable_user_data:
-            params["enableUserData"] = "true"
-        if fields:
-            params["fields"] = ",".join(fields)
-        return cast(MediaItems, await self.user_items(params=params))
-
     def _build_url(self, url: str, params: dict[str, str | int]) -> str:
         assert url.startswith("/")
 
