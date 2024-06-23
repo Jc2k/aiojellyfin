@@ -2,7 +2,7 @@
 
 import urllib
 from dataclasses import dataclass
-from typing import Any, Final, LiteralString, Required, TypedDict, cast
+from typing import Any, Final, Required, TypedDict, cast
 
 from aiohttp import ClientResponseError, ClientSession
 from mashumaro.codecs.basic import BasicDecoder
