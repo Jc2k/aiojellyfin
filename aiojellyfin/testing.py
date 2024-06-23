@@ -331,10 +331,22 @@ class TestConnection(Connection):
             raise NotFound(playlist_id)
 
     async def get_suggested_tracks(self) -> Tracks:
+        """Return suggested tracks."""
         return {
-            "Items": [
-                next(self._fixture.tracks.values())
-            ],
+            "Items": [next(iter(self._fixture.tracks.values()))],
+            "StartIndex": 0,
+            "TotalRecordCount": 1,
+        }
+
+    async def get_similiar_tracks(
+        self,
+        track_id: str,
+        limit: int | None = None,
+        fields: list[str] | None = None,
+    ) -> Tracks:
+        """Return similar tracks."""
+        return {
+            "Items": [next(iter(self._fixture.tracks.values()))],
             "StartIndex": 0,
             "TotalRecordCount": 1,
         }

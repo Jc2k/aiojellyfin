@@ -217,6 +217,8 @@ class Connection:
         except ClientResponseError as e:
             if e.status == 404:
                 raise NotFound("Resource not found")
+            raise
+
         return cast(dict[str, Any], await resp.json())
 
     async def get_media_folders(self, fields: str | None = None) -> MediaLibraries:
@@ -466,12 +468,39 @@ class Connection:
         return playlist
 
     async def get_suggested_tracks(self) -> Tracks:
-        track = self._tracks_decoder.decode(await self._get_json("/Items/Suggestions", {
-            "mediaType": "Audio",
-            "type": "Audio",
-            "limit": 50,
-        }))
-        return track
+        """Return suggested tracks."""
+        return self._tracks_decoder.decode(
+            await self._get_json(
+                "/Items/Suggestions",
+                {
+                    "mediaType": "Audio",
+                    "type": "Audio",
+                    "limit": 50,
+                    "enableUserData": "true",
+                },
+            )
+        )
+
+    async def get_similiar_tracks(
+        self,
+        track_id: str,
+        limit: int | None = None,
+        fields: list[str] | None = None,
+    ) -> Tracks:
+        """Return similar tracks."""
+        params: dict[str, str | int] = {}
+
+        if limit:
+            params["limit"] = limit
+
+        if fields:
+            params["fields"] = ",".join(fields)
+
+        resp = await self._get_json(
+            f"/Items/{track_id}/Similar",
+            params=params or {},
+        )
+        return self._tracks_decoder.decode(resp)
 
     async def search_media_items(
         self,
