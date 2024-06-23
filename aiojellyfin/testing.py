@@ -329,3 +329,12 @@ class TestConnection(Connection):
             return self._fixture.playlists[playlist_id]
         except KeyError:
             raise NotFound(playlist_id)
+
+    async def get_suggested_tracks(self) -> Tracks:
+        return {
+            "Items": [
+                next(self._fixture.tracks.values())
+            ],
+            "StartIndex": 0,
+            "TotalRecordCount": 1,
+        }

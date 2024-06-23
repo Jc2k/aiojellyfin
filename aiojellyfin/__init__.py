@@ -465,6 +465,14 @@ class Connection:
             raise NotFound(playlist_id)
         return playlist
 
+    async def get_suggested_tracks(self) -> Tracks:
+        track = self._tracks_decoder.decode(await self._get_json("/Items/Suggestions", {
+            "mediaType": "Audio",
+            "type": "Audio",
+            "limit": 50,
+        }))
+        return track
+
     async def search_media_items(
         self,
         term: str | None = None,
