@@ -386,19 +386,6 @@ class Connection:
         )
         return self._playlists_decoder.decode(resp)
 
-    async def user_items(
-        self, handler: LiteralString = "", params: dict[str, str | int] | None = None
-    ) -> MediaItems:
-        """Query UserItems."""
-        # This will be removed ASAP with something with more typing
-        return cast(
-            MediaItems,
-            await self._get_json(
-                f"/Items{handler}",
-                params=params or {},
-            ),
-        )
-
     async def get_artist(self, artist_id: str) -> Artist:
         """Fetch all data for a single artist."""
         artist = self._artist_decoder.decode(
