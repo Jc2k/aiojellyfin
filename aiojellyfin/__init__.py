@@ -399,18 +399,6 @@ class Connection:
             ),
         )
 
-    async def get_item(self, item_id: str) -> MediaItem:
-        """Fetch data about a single item in Jellyfin."""
-        return cast(
-            MediaItem,
-            await self._get_json(
-                f"/Users/{self._user_id}/Items/{item_id}",
-                params={
-                    "Fields": DEFAULT_FIELDS,
-                },
-            ),
-        )
-
     async def get_artist(self, artist_id: str) -> Artist:
         """Fetch all data for a single artist."""
         artist = self._artist_decoder.decode(
