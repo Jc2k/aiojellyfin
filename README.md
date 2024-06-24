@@ -2,4 +2,4 @@
 
 Simple asyncio library for accessing Jellyfin.
 
-NOTE: This library is meant to provide what is needed for Music Assistant. At this time it is *not* meant to be a thorough and complete Jellyfin wrapper.
+This library is meant to provide what is needed for Music Assistant. At this time it is *not* meant to be a thorough and complete Jellyfin wrapper.
