@@ -2,6 +2,29 @@
 
 
 
+## v0.9.0 (2024-06-24)
+
+### Chore
+
+* chore: readme update ([`bd6e9c8`](https://github.com/Jc2k/aiojellyfin/commit/bd6e9c8c12bbc5b0420123548c59f395374b1a45))
+
+* chore: lint fixes ([`281b8da`](https://github.com/Jc2k/aiojellyfin/commit/281b8da8612d938928b0573351ba689668a35abd))
+
+### Feature
+
+* feat: add similar tracks ([`78691b5`](https://github.com/Jc2k/aiojellyfin/commit/78691b559872e5c71c1c056403a9957a3dcae18a))
+
+* feat: add suggested tracks endpoint ([`ed0313d`](https://github.com/Jc2k/aiojellyfin/commit/ed0313d993f257af3ae47f3432ca2b34d0ff602e))
+
+### Unknown
+
+* BREAKING CHANGE: removed get_user_items ([`0e42675`](https://github.com/Jc2k/aiojellyfin/commit/0e42675fa0d2413d92bfe5c88cc8e6fb211f91ba))
+
+* BREAKING CHANGE: removed get_item ([`4ed451d`](https://github.com/Jc2k/aiojellyfin/commit/4ed451d18cd0c6e735461bb19c8f7e739e062e05))
+
+* BREAKING CHANGE: removed search_media_items ([`19a5db5`](https://github.com/Jc2k/aiojellyfin/commit/19a5db51e2d2b8d575e419e89428d0885087cd6e))
+
+
 ## v0.8.3 (2024-06-22)
 
 ### Fix
