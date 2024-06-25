@@ -456,7 +456,7 @@ class Connection:
             )
         )
 
-    async def get_similiar_tracks(
+    async def get_similar_tracks(
         self,
         track_id: str,
         limit: int | None = None,
