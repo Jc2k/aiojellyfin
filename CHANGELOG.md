@@ -2,6 +2,13 @@
 
 
 
+## v0.9.1 (2024-06-25)
+
+### Fix
+
+* fix: typo in API ([`e4ad38b`](https://github.com/Jc2k/aiojellyfin/commit/e4ad38b6a92f0418b5c201777e1b425bc13c16da))
+
+
 ## v0.9.0 (2024-06-24)
 
 ### Chore
