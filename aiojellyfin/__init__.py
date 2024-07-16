@@ -2,10 +2,23 @@
 
 import urllib
 from dataclasses import dataclass
-from typing import Any, Final, Required, TypedDict, cast
+from typing import Any, Final, Generic, Mapping, Required, TypedDict, cast
 
 from aiohttp import ClientResponseError, ClientSession
+from aiojellyfin import (
+    Album,
+    Albums,
+    Artist,
+    Artists,
+    MediaLibraries,
+    Playlist,
+    Playlists,
+    Track,
+    Tracks,
+)
 from mashumaro.codecs.basic import BasicDecoder
+
+from aiojellyfin.builder import ItemQueryBuilder, MediaItemT
 
 from .const import ImageType, ItemType
 
@@ -21,131 +34,6 @@ DEFAULT_FIELDS: Final[str] = (
 
 class NotFound(Exception):
     """Raised when media cannot be found."""
-
-
-class MediaStream(TypedDict, total=False):
-    """Information about a Jellyfin stream."""
-
-    Channels: int
-    Codec: str
-
-
-class MediaSource(TypedDict, total=False):
-    """Information about a Jellyfin media source."""
-
-    Path: str
-
-
-class ArtistItem(TypedDict):
-    """Information about a relationship between media and an artist."""
-
-    Id: str
-    Name: str
-
-
-class UserData(TypedDict, total=False):
-    """Metadata that is specific to the logged in user, like favorites."""
-
-    IsFavorite: bool
-
-
-class MediaLibrary(TypedDict, total=False):
-    """JSON data describing a single media library."""
-
-    Id: Required[str]
-    Name: Required[str]
-    CollectionType: str
-
-
-class MediaLibraries(TypedDict):
-    """JSON data describing a collection of media libraries."""
-
-    Items: list[MediaLibrary]
-    TotalRecordCount: int
-    StartIndex: int
-
-
-class MediaItem(TypedDict, total=False):
-    """JSON data describing a single media item."""
-
-    Id: Required[str]
-    Type: ItemType
-    Name: str
-    MediaType: str
-    IndexNumber: int
-    SortName: str
-    AlbumArtist: str
-    Overview: str
-    ProductionYear: int
-    ProviderIds: dict[str, str]
-    CanDownload: bool
-    RunTimeTicks: int
-    MediaStreams: list[MediaStream]
-    AlbumId: str
-    Album: str
-    ParentIndexNumber: int
-    ArtistItems: list[ArtistItem]
-    ImageTags: dict[ImageType, str]
-    BackdropImageTags: list[str]
-    UserData: UserData
-    AlbumArtists: list[ArtistItem]
-    MediaSources: list[MediaSource]
-
-
-class MediaItems(TypedDict):
-    """JSON data describing a collection of media items."""
-
-    Items: list[MediaItem]
-    TotalRecordCount: int
-    StartIndex: int
-
-
-class Artist(MediaItem, TypedDict, total=False):
-    """JSON data describing a single artist."""
-
-
-class Artists(TypedDict):
-    """JSON data describing a collection of artists."""
-
-    Items: list[Artist]
-    TotalRecordCount: int
-    StartIndex: int
-
-
-class Album(MediaItem, TypedDict, total=False):
-    """JSON data describing a single album."""
-
-
-class Albums(TypedDict):
-    """JSON data describing a collection of albums."""
-
-    Items: list[Album]
-    TotalRecordCount: int
-    StartIndex: int
-
-
-class Track(MediaItem, TypedDict, total=False):
-    """JSON data describing a single track."""
-
-
-class Tracks(TypedDict):
-    """JSON data describing a collection of tracks."""
-
-    Items: list[Track]
-    TotalRecordCount: int
-    StartIndex: int
-
-
-class Playlist(MediaItem, TypedDict, total=False):
-    """JSON data describing a single playlist."""
-
-
-class Playlists(TypedDict):
-    """JSON data describing a collection of playlists."""
-
-    Items: list[Track]
-    TotalRecordCount: int
-    StartIndex: int
 
 
 @dataclass
@@ -201,7 +89,9 @@ class Connection:
         self._playlists_decoder = BasicDecoder(Playlists)
         self._playlist_decoder = BasicDecoder(Playlist)
 
-    async def _get_json(self, url: str, params: dict[str, str | int]) -> dict[str, Any]:
+        self.artists = ItemQueryBuilder(self)
+
+    async def _get_json(self, url: str, params: Mapping[str, str | int]) -> dict[str, Any]:
         try:
             resp = await self._session.get(
                 f"{self.base_url}{url}",
