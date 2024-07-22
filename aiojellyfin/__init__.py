@@ -240,8 +240,6 @@ class Connection:
     ) -> Artists:
         """Fetch a list of artists."""
         params: dict[str, str | int] = {
-            "includeItemTypes": "MusicArtist",
-            "ArtistType": "Artist,AlbumArtist",
             "recursive": "true",
         }
 
@@ -264,7 +262,7 @@ class Connection:
             params["fields"] = ",".join(fields)
 
         resp = await self._get_json(
-            "/Items",
+            "/Artists",
             params=params,
         )
         return self._artists_decoder.decode(resp)
