@@ -2,6 +2,13 @@
 
 
 
+## v0.9.2 (2024-07-22)
+
+### Fix
+
+* fix: make sure all artists are returned ([`2238f5c`](https://github.com/Jc2k/aiojellyfin/commit/2238f5cbb65a9f971bb477c7d9cab2d66f21a0ff))
+
+
 ## v0.9.1 (2024-06-25)
 
 ### Fix
