@@ -10,9 +10,8 @@ from .builder import AlbumQueryBuilder, ArtistQueryBuilder, PlaylistQueryBuilder
 from .const import ImageType, ItemType
 from .models import (
     Album,
-    MediaItem,
-    MediaItems,
     Artist,
+    MediaItems,
     MediaLibraries,
     Playlist,
     Track,

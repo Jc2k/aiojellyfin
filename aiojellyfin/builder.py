@@ -6,7 +6,7 @@ from typing import Generic, Self
 
 from mashumaro.codecs.basic import BasicDecoder
 
-from .const import ItemType
+from .const import ItemFields, ItemType
 from .models import Album, Artist, MediaItems, MediaItemT, Playlist, Track
 from .session import Session
 
@@ -82,10 +82,10 @@ class ItemQueryBuilder(Generic[MediaItemT]):
         result._params["enableUserData"] = "true"
         return result
 
-    def fields(self, fields: list[str]) -> Self:
+    def fields(self, *args: ItemFields) -> Self:
         """Specify additional fields of information to return in the output."""
         result = self._clone()
-        result._params["fields"] = ",".join(fields)
+        result._params["fields"] = ",".join(field.value for field in args)
         return result
 
     def start_index(self, start_index: int) -> Self:
