@@ -6,20 +6,15 @@ from collections.abc import Awaitable, Callable
 
 from mashumaro.codecs.json import JSONDecoder
 
-from aiojellyfin import (
+from aiojellyfin import Connection, NotFound
+from aiojellyfin.models import (
     Album,
-    Albums,
     Artist,
-    Artists,
-    Connection,
     MediaLibraries,
-    NotFound,
     Playlist,
-    Playlists,
-    SessionConfiguration,
     Track,
-    Tracks,
 )
+from aiojellyfin.session import SessionConfiguration
 
 MUSIC_FOLDER = "8aeb9430-b1d5-420e-9847-3217ac2120c3"
 

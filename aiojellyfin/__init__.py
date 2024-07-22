@@ -1,26 +1,23 @@
 """A simple library for talking to a Jellyfin server."""
 
 import urllib
-from dataclasses import dataclass
-from typing import Any, Final, Generic, Mapping, Required, TypedDict, cast
+from typing import Final, cast
 
-from aiohttp import ClientResponseError, ClientSession
-from aiojellyfin import (
-    Album,
-    Albums,
-    Artist,
-    Artists,
-    MediaLibraries,
-    Playlist,
-    Playlists,
-    Track,
-    Tracks,
-)
+from aiohttp import ClientSession
 from mashumaro.codecs.basic import BasicDecoder
 
-from aiojellyfin.builder import ItemQueryBuilder, MediaItemT
-
+from .builder import AlbumQueryBuilder, ArtistQueryBuilder, PlaylistQueryBuilder, TrackQueryBuilder
 from .const import ImageType, ItemType
+from .models import (
+    Album,
+    MediaItem,
+    MediaItems,
+    Artist,
+    MediaLibraries,
+    Playlist,
+    Track,
+)
+from .session import Session, SessionConfiguration
 
 DEFAULT_FIELDS: Final[str] = (
     "Path,Genres,SortName,Studios,Writer,Taglines,LocalTrailerCount,"
@@ -36,248 +33,41 @@ class NotFound(Exception):
     """Raised when media cannot be found."""
 
 
-@dataclass
-class SessionConfiguration:
-    """Configuration needed to connect to a Jellyfin server."""
-
-    session: ClientSession
-    url: str
-    app_name: str
-    app_version: str
-    device_name: str
-    device_id: str
-
-    verify_ssl: bool = True
-
-    @property
-    def user_agent(self) -> str:
-        """Get the user agent for this session."""
-        return f"{self.app_name}/{self.app_version}"
-
-    def authentication_header(self, api_token: str | None = None) -> str:
-        """Build the Authorization header for this session."""
-        params = {
-            "Client": self.app_name,
-            "Device": self.device_name,
-            "DeviceId": self.device_id,
-            "Version": self.app_version,
-        }
-        if api_token:
-            params["Token"] = api_token
-        param_line = ", ".join(f'{k}="{v}"' for k, v in params.items())
-        return f"MediaBrowser {param_line}"
-
-
 class Connection:
     """A connection to a Jellyfin server."""
 
     def __init__(self, session_config: SessionConfiguration, user_id: str, access_token: str):
         """Initialise the connection instance."""
+        self._session = Session(session_config, user_id, access_token)
         self._session_config = session_config
-        self._session = session_config.session
         self.base_url = session_config.url.rstrip("/")
         self._user_id = user_id
         self._access_token = access_token
 
         # These will go away when we transition to dataclasses
-        self._artists_decoder = BasicDecoder(Artists)
         self._artist_decoder = BasicDecoder(Artist)
-        self._albums_decoder = BasicDecoder(Albums)
         self._album_decoder = BasicDecoder(Album)
-        self._tracks_decoder = BasicDecoder(Tracks)
         self._track_decoder = BasicDecoder(Track)
-        self._playlists_decoder = BasicDecoder(Playlists)
+        self._tracks_decoder = BasicDecoder(MediaItems[Track])
         self._playlist_decoder = BasicDecoder(Playlist)
 
-        self.artists = ItemQueryBuilder(self)
-
-    async def _get_json(self, url: str, params: Mapping[str, str | int]) -> dict[str, Any]:
-        try:
-            resp = await self._session.get(
-                f"{self.base_url}{url}",
-                params=params,
-                headers={
-                    "Content-Type": "application/json",
-                    "User-Agent": self._session_config.user_agent,
-                    "Authorization": self._session_config.authentication_header(self._access_token),
-                },
-                ssl=self._session_config.verify_ssl,
-                raise_for_status=True,
-            )
-        except ClientResponseError as e:
-            if e.status == 404:
-                raise NotFound("Resource not found")
-            raise
-
-        return cast(dict[str, Any], await resp.json())
+        self.artists = ArtistQueryBuilder.setup(self._session)
+        self.albums = AlbumQueryBuilder.setup(self._session)
+        self.tracks = TrackQueryBuilder.setup(self._session)
+        self.playlists = PlaylistQueryBuilder.setup(self._session)
 
     async def get_media_folders(self, fields: str | None = None) -> MediaLibraries:
         """Fetch a list of media libraries."""
         params: dict[str, str | int] = {}
         if fields:
             params["fields"] = fields
-        resp = await self._get_json("/Items", params=params)
+        resp = await self._session.get_json("/Items", params=params)
         return cast(MediaLibraries, resp)
-
-    async def artists(
-        self,
-        library_id: str | None = None,
-        search_term: str | None = None,
-        start_index: int | None = None,
-        limit: int | None = None,
-        fields: list[str] | None = None,
-        enable_user_data: bool = False,
-    ) -> Artists:
-        """Fetch a list of artists."""
-        params: dict[str, str | int] = {
-            "recursive": "true",
-        }
-
-        if library_id:
-            params["parentId"] = library_id
-
-        if search_term:
-            params["searchTerm"] = search_term
-
-        if start_index:
-            params["startIndex"] = start_index
-
-        if limit:
-            params["limit"] = limit
-
-        if enable_user_data:
-            params["enableUserData"] = "true"
-
-        if fields:
-            params["fields"] = ",".join(fields)
-
-        resp = await self._get_json(
-            "/Artists",
-            params=params,
-        )
-        return self._artists_decoder.decode(resp)
-
-    async def albums(
-        self,
-        library_id: str | None = None,
-        search_term: str | None = None,
-        start_index: int | None = None,
-        limit: int | None = None,
-        fields: list[str] | None = None,
-        enable_user_data: bool = False,
-    ) -> Albums:
-        """Return all library matching query."""
-        params: dict[str, str | int] = {
-            "includeItemTypes": "MusicAlbum",
-            "recursive": "true",
-        }
-
-        if library_id:
-            params["parentId"] = library_id
-
-        if search_term:
-            params["searchTerm"] = search_term
-
-        if start_index:
-            params["startIndex"] = start_index
-
-        if limit:
-            params["limit"] = limit
-
-        if enable_user_data:
-            params["enableUserData"] = "true"
-
-        if fields:
-            params["fields"] = ",".join(fields)
-
-        resp = await self._get_json(
-            "/Items",
-            params=params or {},
-        )
-        return self._albums_decoder.decode(resp)
-
-    async def tracks(
-        self,
-        library_id: str | None = None,
-        search_term: str | None = None,
-        start_index: int | None = None,
-        limit: int | None = None,
-        fields: list[str] | None = None,
-        enable_user_data: bool = False,
-    ) -> Tracks:
-        """Return all library matching query."""
-        params: dict[str, str | int] = {
-            "includeItemTypes": "Audio",
-            "recursive": "true",
-        }
-
-        if library_id:
-            params["parentId"] = library_id
-
-        if search_term:
-            params["searchTerm"] = search_term
-
-        if start_index:
-            params["startIndex"] = start_index
-
-        if limit:
-            params["limit"] = limit
-
-        if enable_user_data:
-            params["enableUserData"] = "true"
-
-        if fields:
-            params["fields"] = ",".join(fields)
-
-        resp = await self._get_json(
-            "/Items",
-            params=params or {},
-        )
-        return self._tracks_decoder.decode(resp)
-
-    async def playlists(
-        self,
-        library_id: str | None = None,
-        search_term: str | None = None,
-        start_index: int | None = None,
-        limit: int | None = None,
-        fields: list[str] | None = None,
-        enable_user_data: bool = False,
-    ) -> Playlists:
-        """Return all library matching query."""
-        params: dict[str, str | int] = {
-            "includeItemTypes": "Playlist",
-            "recursive": "true",
-        }
-
-        if library_id:
-            params["parentId"] = library_id
-
-        if search_term:
-            params["searchTerm"] = search_term
-
-        if start_index:
-            params["startIndex"] = start_index
-
-        if limit:
-            params["limit"] = limit
-
-        if enable_user_data:
-            params["enableUserData"] = "true"
-
-        if fields:
-            params["fields"] = ",".join(fields)
-
-        resp = await self._get_json(
-            "/Items",
-            params=params or {},
-        )
-        return self._playlists_decoder.decode(resp)
 
     async def get_artist(self, artist_id: str) -> Artist:
         """Fetch all data for a single artist."""
         artist = self._artist_decoder.decode(
-            await self._get_json(
+            await self._session.get_json(
                 f"/Users/{self._user_id}/Items/{artist_id}",
                 params={
                     "Fields": DEFAULT_FIELDS,
@@ -291,7 +81,7 @@ class Connection:
     async def get_album(self, album_id: str) -> Album:
         """Fetch all data for a single album."""
         album = self._album_decoder.decode(
-            await self._get_json(
+            await self._session.get_json(
                 f"/Users/{self._user_id}/Items/{album_id}",
                 params={
                     "Fields": DEFAULT_FIELDS,
@@ -305,7 +95,7 @@ class Connection:
     async def get_track(self, track_id: str) -> Track:
         """Fetch all data for a single track."""
         track = self._track_decoder.decode(
-            await self._get_json(
+            await self._session.get_json(
                 f"/Users/{self._user_id}/Items/{track_id}",
                 params={
                     "Fields": DEFAULT_FIELDS,
@@ -319,7 +109,7 @@ class Connection:
     async def get_playlist(self, playlist_id: str) -> Playlist:
         """Fetch all data for a single playlist."""
         playlist = self._playlist_decoder.decode(
-            await self._get_json(
+            await self._session.get_json(
                 f"/Users/{self._user_id}/Items/{playlist_id}",
                 params={
                     "Fields": DEFAULT_FIELDS,
@@ -330,10 +120,10 @@ class Connection:
             raise NotFound(playlist_id)
         return playlist
 
-    async def get_suggested_tracks(self) -> Tracks:
+    async def get_suggested_tracks(self) -> MediaItems[Track]:
         """Return suggested tracks."""
         return self._tracks_decoder.decode(
-            await self._get_json(
+            await self._session.get_json(
                 "/Items/Suggestions",
                 {
                     "mediaType": "Audio",
@@ -349,7 +139,7 @@ class Connection:
         track_id: str,
         limit: int | None = None,
         fields: list[str] | None = None,
-    ) -> Tracks:
+    ) -> MediaItems[Track]:
         """Return similar tracks."""
         params: dict[str, str | int] = {}
 
@@ -359,7 +149,7 @@ class Connection:
         if fields:
             params["fields"] = ",".join(fields)
 
-        resp = await self._get_json(
+        resp = await self._session.get_json(
             f"/Items/{track_id}/Similar",
             params=params or {},
         )

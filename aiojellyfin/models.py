@@ -1,6 +1,6 @@
-from typing import Generic, Required, TypedDict
+"""Jellyfin API models."""
 
-from aiojellyfin.builder import MediaItemT
+from typing import Generic, Required, TypedDict, TypeVar
 
 from .const import ImageType, ItemType
 
@@ -74,6 +74,9 @@ class MediaItem(TypedDict, total=False):
     MediaSources: list[MediaSource]
 
 
+MediaItemT = TypeVar("MediaItemT", bound=MediaItem)
+
+
 class MediaItems(Generic[MediaItemT], TypedDict):
     """JSON data describing a collection of media items."""
 
@@ -86,45 +89,13 @@ class Artist(MediaItem, TypedDict, total=False):
     """JSON data describing a single artist."""
 
 
-class Artists(TypedDict):
-    """JSON data describing a collection of artists."""
-
-    Items: list[Artist]
-    TotalRecordCount: int
-    StartIndex: int
-
-
 class Album(MediaItem, TypedDict, total=False):
     """JSON data describing a single album."""
-
-
-class Albums(TypedDict):
-    """JSON data describing a collection of albums."""
-
-    Items: list[Album]
-    TotalRecordCount: int
-    StartIndex: int
 
 
 class Track(MediaItem, TypedDict, total=False):
     """JSON data describing a single track."""
 
 
-class Tracks(TypedDict):
-    """JSON data describing a collection of tracks."""
-
-    Items: list[Track]
-    TotalRecordCount: int
-    StartIndex: int
-
-
 class Playlist(MediaItem, TypedDict, total=False):
     """JSON data describing a single playlist."""
-
-
-class Playlists(TypedDict):
-    """JSON data describing a collection of playlists."""
-
-    Items: list[Track]
-    TotalRecordCount: int
-    StartIndex: int
