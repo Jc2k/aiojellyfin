@@ -7,16 +7,35 @@ from aiohttp import ClientSession
 from mashumaro.codecs.basic import BasicDecoder
 
 from .builder import AlbumQueryBuilder, ArtistQueryBuilder, PlaylistQueryBuilder, TrackQueryBuilder
-from .const import ImageType, ItemType
+from .const import ImageType, ItemFields, ItemType
 from .models import (
     Album,
     Artist,
+    MediaItem,
     MediaItems,
     MediaLibraries,
+    MediaLibrary,
     Playlist,
     Track,
 )
 from .session import Session, SessionConfiguration
+
+__all__ = [
+    "Album",
+    "Artist",
+    "MediaItem",
+    "MediaItems",
+    "MediaLibraries",
+    "MediaLibrary",
+    "Playlist",
+    "Track",
+    "ImageType",
+    "ItemType",
+    "ItemFields",
+    "Connection",
+    "NotFound",
+    "authenticate_by_name",
+]
 
 DEFAULT_FIELDS: Final[str] = (
     "Path,Genres,SortName,Studios,Writer,Taglines,LocalTrailerCount,"
