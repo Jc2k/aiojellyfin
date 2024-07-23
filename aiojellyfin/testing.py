@@ -160,11 +160,7 @@ class TestConnection(Connection):
 
     async def get_suggested_tracks(self) -> MediaItems[Track]:
         """Return suggested tracks."""
-        return {
-            "Items": [next(iter(self._fixture.tracks.values()))],
-            "StartIndex": 0,
-            "TotalRecordCount": 1,
-        }
+        return await self.tracks.search_term("thrown").request()
 
     async def get_similar_tracks(
         self,
@@ -173,8 +169,4 @@ class TestConnection(Connection):
         fields: list[str] | None = None,
     ) -> MediaItems[Track]:
         """Return similar tracks."""
-        return {
-            "Items": [next(iter(self._fixture.tracks.values()))],
-            "StartIndex": 0,
-            "TotalRecordCount": 1,
-        }
+        return await self.tracks.search_term("thrown").request()
