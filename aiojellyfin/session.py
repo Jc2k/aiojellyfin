@@ -63,7 +63,7 @@ class Session:
         self._user_id = user_id
         self._access_token = access_token
 
-    async def get_json(self, url: str, params: Mapping[str, str | int]) -> dict[str, Any]:
+    async def get_json(self, url: str, params: Mapping[str, str]) -> dict[str, Any]:
         """Call a Jellyfin API and retrieve the JSON response."""
         try:
             resp = await self._session.get(

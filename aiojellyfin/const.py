@@ -126,3 +126,26 @@ class ItemFields(StrEnum):
     LocalTrailerCount = "LocalTrailerCount"
     IsHD = "IsHD"
     SpecialFeatureCount = "SpecialFeatureCount"
+
+
+class ItemFilter(StrEnum):
+    """Additional filters."""
+
+    IsFolder = "IsFolder"
+    IsNotFolder = "IsNotFolder"
+    IsUnplayed = "IsUnplayed"
+    IsPlayed = "IsPlayed"
+    IsFavorite = "IsFavorite"
+    IsResumable = "IsResumable"
+    Likes = "Likes"
+    Dislikes = "Dislikes"
+    IsFavoriteOrLikes = "IsFavoriteOrLikes"
+
+
+class LocationType(StrEnum):
+    """Media location types."""
+
+    FileSystem = "FileSystem"
+    Remote = "Remote"
+    Virtual = "Virtual"
+    Offline = "Offline"

@@ -7,7 +7,7 @@ from typing import Generic, Self
 
 from mashumaro.codecs.basic import BasicDecoder
 
-from .const import ItemFields, ItemType
+from .const import ItemFields, ItemFilter, ItemType, LocationType
 from .models import Album, Artist, MediaItems, MediaItemT, Playlist, Track
 from .session import Session
 
@@ -44,20 +44,29 @@ class ItemQueryBuilder(Generic[MediaItemT]):
             copy.deepcopy(self._params),
         )
 
+    def _clone_and_set(self, params: dict[str, str]) -> Self:
+        result = self._clone()
+        result._params.update(params)
+        return result
+
+    def user_id(self, user_id: str) -> Self:
+        """Set the user_id for the query; this is required when not using an API key."""
+        return self._clone_and_set({"userId": user_id})
+
     def parent(self, parent_id: str) -> Self:
         """Specify this to localize the search to a specific item or folder.
 
         Omit to use the root.
         """
-        result = self._clone()
-        result._params["parentId"] = parent_id
-        return result
+        return self._clone_and_set({"parentId": parent_id})
 
     def search_term(self, search_term: str) -> Self:
         """Search for this term."""
-        result = self._clone()
-        result._params["searchTerm"] = search_term
-        return result
+        return self._clone_and_set({"searchTerm": search_term})
+
+    def filters(self, *filters: ItemFilter) -> Self:
+        """Specify additional filters to apply."""
+        return self._clone_and_set({"filters": ",".join(f.value for f in filters)})
 
     def include_item_types(self, *args: ItemType) -> Self:
         """Only include these item types."""
@@ -71,11 +80,31 @@ class ItemQueryBuilder(Generic[MediaItemT]):
         result._params["excludeItemTypes"] = ",".join(args)
         return result
 
+    def include_location_types(self, *args: LocationType) -> Self:
+        """If specified, results will be filtered based on the LocationType."""
+        return self._clone_and_set({"locationTypes": ",".join(arg.value for arg in args)})
+
+    def exclude_location_types(self, *args: LocationType) -> Self:
+        """If specified, results will be filtered based on the LocationType."""
+        return self._clone_and_set({"excludeLocationTypes": ",".join(arg.value for arg in args)})
+
     def recursive(self, recursive: bool) -> Self:
         """Search parent folder and all child folders."""
         result = self._clone()
         result._params["recursive"] = "true" if recursive else "false"
         return result
+
+    def max_official_rating(self, rating: str) -> Self:
+        """Filter by maximum official rating (PG, PG-13, TV-MA, etc)."""
+        return self._clone_and_set({"maxOfficialRating": rating})
+
+    def has_theme_song(self, has_theme_song: bool) -> Self:
+        """Filter by items with theme songs."""
+        return self._clone_and_set({"hasThemeSong": "true" if has_theme_song else "false"})
+
+    def has_theme_video(self, has_theme_video: bool) -> Self:
+        """Filter by items with theme videos."""
+        return self._clone_and_set({"hasThemeVideo": "true" if has_theme_video else "false"})
 
     def enable_userdata(self) -> Self:
         """Include per user metadata - does the logged in user like the content."""

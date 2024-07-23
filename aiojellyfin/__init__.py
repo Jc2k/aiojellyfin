@@ -57,7 +57,7 @@ class Connection:
 
     async def get_media_folders(self, fields: str | None = None) -> MediaLibraries:
         """Fetch a list of media libraries."""
-        params: dict[str, str | int] = {}
+        params: dict[str, str] = {}
         if fields:
             params["fields"] = fields
         resp = await self._session.get_json("/Items", params=params)
@@ -127,7 +127,7 @@ class Connection:
                 {
                     "mediaType": "Audio",
                     "type": "Audio",
-                    "limit": 50,
+                    "limit": "50",
                     "enableUserData": "true",
                 },
             )
@@ -140,10 +140,10 @@ class Connection:
         fields: list[str] | None = None,
     ) -> MediaItems[Track]:
         """Return similar tracks."""
-        params: dict[str, str | int] = {}
+        params: dict[str, str] = {}
 
         if limit:
-            params["limit"] = limit
+            params["limit"] = str(limit)
 
         if fields:
             params["fields"] = ",".join(fields)
