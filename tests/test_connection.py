@@ -1,7 +1,9 @@
 """Test the connection object."""
 
+import asyncio
 import pathlib
 from collections.abc import AsyncGenerator
+from contextlib import aclosing
 
 import aiohttp
 import pytest
@@ -20,6 +22,9 @@ FIXTURES_TRACKS = FIXTURES_ROOT / "tracks"
 @pytest.fixture
 async def connection() -> AsyncGenerator[Connection, None]:
     """Configure an aiojellyfin test fixture."""
+    loop = asyncio.get_running_loop()
+    loop.set_debug(True)
+
     f = FixtureBuilder()
 
     for path in (FIXTURES_ARTISTS, FIXTURES_ALBUMS, FIXTURES_TRACKS):
@@ -130,6 +135,13 @@ async def test_search_tracks(connection: Connection) -> None:
         "Where the Bands Are (2018 Version)",
         "Zombie Christmas",
     }
+
+
+async def test_early_break_tracks(connection: Connection) -> None:
+    """Make sure we can search tracks and break."""
+    async with aclosing(connection.tracks.stream(1)) as stream:
+        async for track in stream:
+            break
 
 
 async def test_similar_tracks(connection: Connection) -> None:
