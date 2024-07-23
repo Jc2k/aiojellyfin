@@ -1,5 +1,6 @@
 """Builder pattern for building Jellyfin API queries."""
 
+import asyncio
 import copy
 from collections.abc import AsyncGenerator
 from typing import Generic, Self
@@ -113,19 +114,22 @@ class ItemQueryBuilder(Generic[MediaItemT]):
         return self._decoder.decode(response)
 
     async def stream(self, page_size: int = 100) -> AsyncGenerator[MediaItemT, None]:
-        """Request all records matching this query, automatically paging."""
+        """Stream all records matching this query with automatic greedy pagination."""
         request = self.limit(page_size)
         response = await request.request()
-        for obj in response["Items"]:
-            yield obj
-
-        offset = page_size
+        offset = 0
 
         while offset < response["TotalRecordCount"]:
-            response = await request.start_index(offset).request()
+            offset += page_size
+            next_response = asyncio.create_task(request.start_index(offset).request())
+
             for obj in response["Items"]:
                 yield obj
-            offset += page_size
+
+            response = await next_response
+
+        for obj in response["Items"]:
+            yield obj
 
 
 class ArtistQueryBuilder(ItemQueryBuilder[Artist]):
