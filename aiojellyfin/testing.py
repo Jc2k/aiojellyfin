@@ -6,7 +6,7 @@ from collections import defaultdict
 from collections.abc import Awaitable, Callable, Mapping
 from typing import Any
 
-from aiojellyfin import Connection, NotFound, session
+from aiojellyfin import Connection, ItemFields, NotFound, session
 from aiojellyfin.models import (
     MediaItems,
     MediaLibraries,
@@ -166,7 +166,7 @@ class TestConnection(Connection):
         self,
         track_id: str,
         limit: int | None = None,
-        fields: list[str] | None = None,
+        fields: list[ItemFields] | None = None,
     ) -> MediaItems[Track]:
         """Return similar tracks."""
         return await self.tracks.search_term("thrown").request()

@@ -156,7 +156,7 @@ class Connection:
         self,
         track_id: str,
         limit: int | None = None,
-        fields: list[str] | None = None,
+        fields: list[ItemFields] | None = None,
     ) -> MediaItems[Track]:
         """Return similar tracks."""
         params: dict[str, str] = {}
@@ -165,7 +165,7 @@ class Connection:
             params["limit"] = str(limit)
 
         if fields:
-            params["fields"] = ",".join(fields)
+            params["fields"] = ",".join(f.value for f in fields)
 
         resp = await self._session.get_json(
             f"/Items/{track_id}/Similar",
