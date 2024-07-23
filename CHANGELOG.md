@@ -2,6 +2,41 @@
 
 
 
+## v0.10.0 (2024-07-23)
+
+### Chore
+
+* chore: test interupt ([`712e457`](https://github.com/Jc2k/aiojellyfin/commit/712e4578d6c7f90aa5bea0f754e108a7d44ac995))
+
+* chore: cleanup __all__ ([`11f766e`](https://github.com/Jc2k/aiojellyfin/commit/11f766ea6f9158e01fd18f321bbed58b50ddd628))
+
+* chore: fix fixture line endings ([`bcac7ca`](https://github.com/Jc2k/aiojellyfin/commit/bcac7cafeb18ff13f68a419661802f9c70323069))
+
+* chore: tests and mypy passing ([`ac306f7`](https://github.com/Jc2k/aiojellyfin/commit/ac306f7c3e729e148b9870d77832d13fbf1452ae))
+
+* chore: test refactoring to improve mypy coverage ([`a28f2e6`](https://github.com/Jc2k/aiojellyfin/commit/a28f2e634be69127a74e8f1bc3ba6fcbfe63703c))
+
+* chore: update test infra for new builder pattern api ([`73fb5b1`](https://github.com/Jc2k/aiojellyfin/commit/73fb5b182d07ec8589960cae8a3029e9f74f648e))
+
+### Feature
+
+* feat: get_similar_tracks now uses ItemFields enum ([`a0aab85`](https://github.com/Jc2k/aiojellyfin/commit/a0aab85715497c20e3a324e7975c2fa622c540eb))
+
+* feat: add greedy pagination to MediaItemsQueryBuilder.stream() ([`ea69a42`](https://github.com/Jc2k/aiojellyfin/commit/ea69a425823802d96c245933bae118a4821bc583))
+
+* feat: add ItemFields enum ([`204c73e`](https://github.com/Jc2k/aiojellyfin/commit/204c73e01305287683bbe3cf0d64ee1571942a01))
+
+* feat: c.tracks, c.albums, c.artists and c.playlists are now all query builder objects ([`c8d8301`](https://github.com/Jc2k/aiojellyfin/commit/c8d83014a1c6413927bc0122e53620f2622c15d3))
+
+* feat: add builder pattern for querying ([`f64e973`](https://github.com/Jc2k/aiojellyfin/commit/f64e973da4469e632d22cd40c6d7276b74eac19b))
+
+### Unknown
+
+* Merge pull request #1 from Jc2k/builder
+
+Builder pattern for creating Jellyfin queries ([`c775ab4`](https://github.com/Jc2k/aiojellyfin/commit/c775ab4d038833865f003be3fc10deb8adaa0687))
+
+
 ## v0.9.2 (2024-07-22)
 
 ### Fix
