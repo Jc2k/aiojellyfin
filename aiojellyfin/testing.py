@@ -8,11 +8,8 @@ from typing import Any
 
 from aiojellyfin import Connection, NotFound, session
 from aiojellyfin.models import (
-    Album,
-    Artist,
     MediaItems,
     MediaLibraries,
-    Playlist,
     Track,
 )
 from aiojellyfin.session import SessionConfiguration
@@ -25,7 +22,7 @@ class FixtureBuilder:
 
     def __init__(self) -> None:
         """Init the class."""
-        self.objects: dict[str, Any] = {}
+        self.objects: dict[str, dict[str, Any]] = {}
         self.objects_parents: dict[str, set[str]] = defaultdict(set)
 
     def add_json_bytes(self, data: str | bytes) -> None:
@@ -118,6 +115,13 @@ class Session(session.Session):
                 "TotalRecordCount": total_record_count,
             }
 
+        user_items = f"/Users/{self.user_id}/Items/"
+        if url.startswith(user_items):
+            item_id = url.split(user_items, 1)[1]
+            if single_item := self.fixture.objects.get(item_id):
+                return single_item
+            raise NotFound(item_id)
+
         raise RuntimeError("Unfaked http request detected")
 
 
@@ -153,34 +157,6 @@ class TestConnection(Connection):
             "TotalRecordCount": 1,
             "StartIndex": 0,
         }
-
-    async def get_artist(self, artist_id: str) -> Artist:
-        """Fetch all data for a single artist."""
-        try:
-            return self._fixture.objects[artist_id]
-        except KeyError:
-            raise NotFound(artist_id)
-
-    async def get_album(self, album_id: str) -> Album:
-        """Fetch all data for a single album."""
-        try:
-            return self._fixture.objects[album_id]
-        except KeyError:
-            raise NotFound(album_id)
-
-    async def get_track(self, track_id: str) -> Track:
-        """Fetch all data for a single track."""
-        try:
-            return self._fixture.objects[track_id]
-        except KeyError:
-            raise NotFound(track_id)
-
-    async def get_playlist(self, playlist_id: str) -> Playlist:
-        """Fetch all data for a single playlist."""
-        try:
-            return self._fixture.objects[playlist_id]
-        except KeyError:
-            raise NotFound(playlist_id)
 
     async def get_suggested_tracks(self) -> MediaItems[Track]:
         """Return suggested tracks."""
