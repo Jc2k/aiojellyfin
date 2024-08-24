@@ -228,21 +228,18 @@ async def authenticate_by_name(
     session_config: SessionConfiguration, username: str, password: str = ""
 ) -> Connection:
     """Authenticate against a server with a username and password and return a connection."""
-    session = ClientSession(
-        base_url=session_config.url,
+    base_url = session_config.url.rstrip("/")
+    res = await session_config.session.post(
+        f"{base_url}/Users/AuthenticateByName",
+        json={"Username": username, "Pw": password},
+        headers={
+            "Content-Type": "application/json",
+            "User-Agent": session_config.user_agent,
+            "Authorization": session_config.authentication_header(),
+        },
+        raise_for_status=True,
     )
-    async with session:
-        res = await session.post(
-            "/Users/AuthenticateByName",
-            json={"Username": username, "Pw": password},
-            headers={
-                "Content-Type": "application/json",
-                "User-Agent": session_config.user_agent,
-                "Authorization": session_config.authentication_header(),
-            },
-            raise_for_status=True,
-        )
-        user_session = await res.json()
+    user_session = await res.json()
 
     user = user_session["User"]
 
