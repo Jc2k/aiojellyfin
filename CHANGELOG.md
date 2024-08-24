@@ -2,6 +2,17 @@
 
 
 
+## v0.10.1 (2024-08-24)
+
+### Chore
+
+* chore: lint fixes ([`22b767f`](https://github.com/Jc2k/aiojellyfin/commit/22b767f84e81fdbe764e838c698c89b01c853575))
+
+### Fix
+
+* fix: always use the shared ClientSession ([`4551ff6`](https://github.com/Jc2k/aiojellyfin/commit/4551ff6ba974c890749d40e4e1328cac5a6bdc26))
+
+
 ## v0.10.0 (2024-07-23)
 
 ### Chore
