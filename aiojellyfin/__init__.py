@@ -78,6 +78,7 @@ class Connection:
         params: dict[str, str] = {}
         if fields:
             params["fields"] = fields
+        params["userId"] = self._user_id
         resp = await self._session.get_json("/Items", params=params)
         return cast(MediaLibraries, resp)
 
