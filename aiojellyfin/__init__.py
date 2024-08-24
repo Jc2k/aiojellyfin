@@ -3,7 +3,6 @@
 import urllib
 from typing import Final, cast
 
-from aiohttp import ClientSession
 from mashumaro.codecs.basic import BasicDecoder
 
 from .builder import AlbumQueryBuilder, ArtistQueryBuilder, PlaylistQueryBuilder, TrackQueryBuilder
