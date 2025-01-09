@@ -189,6 +189,10 @@ class TrackQueryBuilder(ItemQueryBuilder[Track]):
         """Initialise the builder with default search restrictions for tracks."""
         return super().create(session).include_item_types(ItemType.Audio).recursive(True)
 
+    def in_playlist(self, playlist_id: str) -> Self:
+        """Only look inside the named playlist. Items are returned in the correct order."""
+        self.endpoint = f"/Playlists/{playlist_id}/Items"
+
 
 class PlaylistQueryBuilder(ItemQueryBuilder[Playlist]):
     """Builder for searching playlist records."""
