@@ -2,6 +2,13 @@
 
 
 
+## v0.11.1 (2025-01-09)
+
+### Fix
+
+* fix: in_playlist needs to return the clone ([`ed7b46a`](https://github.com/Jc2k/aiojellyfin/commit/ed7b46ad070e0157b42c93aeb777f4b5ae3e466f))
+
+
 ## v0.11.0 (2025-01-09)
 
 ### Chore
