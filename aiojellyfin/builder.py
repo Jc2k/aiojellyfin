@@ -191,7 +191,9 @@ class TrackQueryBuilder(ItemQueryBuilder[Track]):
 
     def in_playlist(self, playlist_id: str) -> Self:
         """Only look inside the named playlist. Items are returned in the correct order."""
-        self.endpoint = f"/Playlists/{playlist_id}/Items"
+        result = self._clone()
+        result.endpoint = f"/Playlists/{playlist_id}/Items"
+        return result
 
 
 class PlaylistQueryBuilder(ItemQueryBuilder[Playlist]):
