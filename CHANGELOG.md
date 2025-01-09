@@ -2,6 +2,23 @@
 
 
 
+## v0.11.0 (2025-01-09)
+
+### Chore
+
+* chore: more lint config changes ([`8bdf31f`](https://github.com/Jc2k/aiojellyfin/commit/8bdf31fea1bbb5631d0c8aacc38832485701ad7c))
+
+* chore: properly update ruff in extras ([`d8b4bd5`](https://github.com/Jc2k/aiojellyfin/commit/d8b4bd5b4b5e7c6d2c89d0bf25c6d04887068097))
+
+### Feature
+
+* feat: better support for querying playlists ([`e472765`](https://github.com/Jc2k/aiojellyfin/commit/e4727657bccc4a3ebff272cefd2aecd70ded5b5f))
+
+### Fix
+
+* fix: correct ruff config warnings after update ([`f768b80`](https://github.com/Jc2k/aiojellyfin/commit/f768b804de809a7e39eb5ac2b5bc30eb8fbd39b1))
+
+
 ## v0.10.1 (2024-08-24)
 
 ### Chore
