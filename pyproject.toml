@@ -28,7 +28,7 @@ test = [
   "pytest-aiohttp==1.0.5",
   "pytest-cov==5.0.0",
   "tomli==2.0.1",
-  "ruff"
+  "ruff>=0.8"
 ]
 
 [tool.setuptools]
@@ -172,7 +172,7 @@ ignore = [
   "PLR2004", # Just annoying, not really useful
   "PD011", # Just annoying, not really useful
   "S101", # assert is often used to satisfy type checking
-  "TCH01", # Just annoying, not really useful
+  "TC001", # Just annoying, not really useful
   "TC003", # Just annoying, not really useful
   "TD002", # Just annoying, not really useful
   "TD003", # Just annoying, not really useful

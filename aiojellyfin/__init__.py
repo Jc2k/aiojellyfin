@@ -22,17 +22,17 @@ from .session import Session, SessionConfiguration
 __all__ = [
     "Album",
     "Artist",
+    "Connection",
+    "ImageType",
+    "ItemFields",
+    "ItemType",
     "MediaItem",
     "MediaItems",
     "MediaLibraries",
     "MediaLibrary",
+    "NotFound",
     "Playlist",
     "Track",
-    "ImageType",
-    "ItemType",
-    "ItemFields",
-    "Connection",
-    "NotFound",
     "authenticate_by_name",
 ]
 
