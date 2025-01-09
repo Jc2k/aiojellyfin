@@ -2,6 +2,13 @@
 
 
 
+## v0.11.2 (2025-01-09)
+
+### Fix
+
+* fix: preserve endpoint when cloning builders ([`4c13caa`](https://github.com/Jc2k/aiojellyfin/commit/4c13caa3a5f9101a13765c3832dafd814b9711bb))
+
+
 ## v0.11.1 (2025-01-09)
 
 ### Fix
