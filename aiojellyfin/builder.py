@@ -190,7 +190,7 @@ class TrackQueryBuilder(ItemQueryBuilder[Track]):
     @classmethod
     def setup(cls, session: Session) -> Self:
         """Initialise the builder with default search restrictions for tracks."""
-        return super().create(session).include_item_types(ItemType.Audio).recursive(True)
+        return super().create(session).include_item_types(ItemType.Audio, ItemType.MusicVideo).recursive(True)
 
     def in_playlist(self, playlist_id: str) -> Self:
         """Only look inside the named playlist. Items are returned in the correct order."""
