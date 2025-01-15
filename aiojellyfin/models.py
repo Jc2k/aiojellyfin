@@ -1,16 +1,18 @@
 """Jellyfin API models."""
 
+from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Annotated, Generic, Sequence, TypeVar
+from typing import Generic, TypeVar
 
-from mashumaro.mixins.json import DataClassJSONMixin
 from mashumaro.config import BaseConfig
+from mashumaro.mixins.json import DataClassJSONMixin
 from mashumaro.types import Discriminator
 
 from .const import ImageType, ItemType, MediaProtocol, MediaSourceType
 
 
 class JellyfinConfig(BaseConfig):
+    """Mashumaro configuration."""
 
     forbid_extra_keys = False
 
@@ -20,6 +22,8 @@ class MediaStream(DataClassJSONMixin):
     """Information about a Jellyfin stream."""
 
     class Config(BaseConfig):
+        """Mashumaro configuration."""
+
         discriminator = Discriminator(
             field="Type",
             include_subtypes=True,
@@ -41,11 +45,14 @@ class MediaStream(DataClassJSONMixin):
     SupportsExternalStream: bool | None
     Level: bool | None
 
+
 @dataclass(kw_only=True)
 class AudioMediaStream(MediaStream):
+    """An audio media stream."""
+
     Type = "Audio"
 
-    CodecTag: str | None = None     
+    CodecTag: str | None = None
     Language: str | None = None
     DisplayTitle: str
     ChannelLayout: str
@@ -53,8 +60,11 @@ class AudioMediaStream(MediaStream):
     Channels: int
     SampleRate: int
 
+
 @dataclass(kw_only=True)
 class EmbeddedImageMediaStream(MediaStream):
+    """An embedded image stream."""
+
     Type = "EmbeddedImage"
 
 
@@ -122,21 +132,42 @@ class MediaLibraries:
 class MediaItem(DataClassJSONMixin):
     """JSON data describing a single media item."""
 
-    Config = JellyfinConfig
+    class Config(BaseConfig):
+        """Config for mashumaro."""
 
-    Id: str
-    Type: ItemType
-    Name: str
-    MediaType: str
-    SortName: str
-    ProviderIds: dict[str, str]
-    RunTimeTicks: int
-    ImageTags: dict[ImageType, str]
-    BackdropImageTags: list[str]
-    UserData: UserData
-    Overview: str | None = None
-    IndexNumber: int | None = None
-    
+        discriminator = Discriminator(
+            field="Type",
+            include_subtypes=True,
+        )
+
+        aliases = {
+            "id": "Id",
+            "item_type": "Type",
+            "name": "Name",
+            "media_type": "MediaType",
+            "sort_name": "SortName",
+            "provider_ids": "ProviderIds",
+            "run_time_ticks": "RunTimeTicks",
+            "image_tags": "ImageTags",
+            "backdrop_image_tags": "BackdropImageTags",
+            "user_data": "UserData",
+            "overview": "Overview",
+            "index_number": "IndexNumber",
+        }
+
+    id: str
+    item_type: ItemType
+    name: str
+    media_type: str
+    sort_name: str | None = None
+    provider_ids: dict[str, str] | None = None
+    run_time_ticks: int
+    image_tags: dict[ImageType, str]
+    backdrop_image_tags: list[str]
+    user_data: UserData | None = None
+    overview: str | None = None
+    index_number: int | None = None
+
 
 MediaItemT = TypeVar("MediaItemT", bound=MediaItem)
 
@@ -156,10 +187,14 @@ class MediaItems(Generic[MediaItemT], DataClassJSONMixin):
 class Artist(MediaItem):
     """JSON data describing a single artist."""
 
+    Type = ItemType.MusicArtist
+
 
 @dataclass(kw_only=True)
 class Album(MediaItem):
     """JSON data describing a single album."""
+
+    Type = ItemType.MusicAlbum
 
     CanDownload: bool | None = None
     ProductionYear: int | None = None
@@ -171,14 +206,16 @@ class Album(MediaItem):
 class Track(MediaItem):
     """JSON data describing a single track."""
 
+    Type = ItemType.Audio
+
     AlbumId: str | None = None
     Album: str | None = None
     AlbumArtist: str | None = None
-    CanDownload: bool
+    CanDownload: bool | None = None
     ProductionYear: int | None = None
     ParentIndexNumber: int
-    MediaSources: list[MediaSource]
-    MediaStreams: Sequence[MediaStream] | None
+    MediaSources: list[MediaSource] | None = None
+    MediaStreams: Sequence[MediaStream] | None = None
     NormalizationGain: int | None = None
     ArtistItems: list[ArtistItem]
     AlbumArtists: list[ArtistItem]
@@ -187,3 +224,5 @@ class Track(MediaItem):
 @dataclass(kw_only=True)
 class Playlist(MediaItem):
     """JSON data describing a single playlist."""
+
+    Type = ItemType.Playlist

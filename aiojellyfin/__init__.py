@@ -3,8 +3,6 @@
 import urllib
 from typing import Final, cast
 
-from mashumaro.codecs.basic import BasicDecoder
-
 from .builder import AlbumQueryBuilder, ArtistQueryBuilder, PlaylistQueryBuilder, TrackQueryBuilder
 from .const import ImageType, ItemFields, ItemType
 from .models import (
