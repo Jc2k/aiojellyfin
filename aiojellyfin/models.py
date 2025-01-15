@@ -29,21 +29,39 @@ class MediaStream(DataClassJSONMixin):
             include_subtypes=True,
         )
 
-    Codec: str
-    TimeBase: str | None
-    AudioSpacialFormat: str | None = None
-    IsInterlaced: bool | None
-    IsAVC: bool | None
-    IsDefault: bool | None
-    IsForced: bool | None
-    IsHearingImpaired: bool | None
-    Profile: str | None = None
-    Type: str | None
-    Index: int | None
-    IsExternal: bool | None
-    IsTextSubtitleStream: bool | None
-    SupportsExternalStream: bool | None
-    Level: bool | None
+        aliases = {
+            "codec": "Codec",
+            "time_base": "TimeBase",
+            "audio_spacial_format": "AudioSpacialFormat",
+            "is_interlaced": "IsInterlaced",
+            "is_avc": "IsAVC",
+            "is_default": "IsDefault",
+            "is_forced": "IsForced",
+            "is_hearing_impaired": "IsHearingImpaired",
+            "profile": "Profile",
+            "media_stream_type": "Type",
+            "index": "Index",
+            "is_external": "IsExternal",
+            "is_text_subtitle_stream": "IsTextSubtitleStream",
+            "supports_external_stream": "SupportsExternalStream",
+            "level": "Level",
+        }
+
+    codec: str
+    time_base: str | None
+    audio_spacial_format: str | None = None
+    is_interlaced: bool | None
+    is_avc: bool | None
+    is_default: bool | None
+    is_forced: bool | None
+    is_hearing_impaired: bool | None
+    profile: str | None = None
+    media_stream_type: str | None
+    index: int | None
+    is_external: bool | None
+    is_text_subtitle_stream: bool | None
+    supports_external_stream: bool | None
+    level: bool | None
 
 
 @dataclass(kw_only=True)

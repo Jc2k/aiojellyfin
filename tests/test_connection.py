@@ -44,7 +44,7 @@ async def connection() -> AsyncGenerator[Connection, None]:
 async def test_get_folders(connection: Connection) -> None:
     """Make sure we can get folders."""
     folders = await connection.get_media_folders()
-    assert folders.Items[0] == "Music"
+    assert folders.Items[0].Name == "Music"
 
 
 async def test_get_artist(connection: Connection) -> None:
