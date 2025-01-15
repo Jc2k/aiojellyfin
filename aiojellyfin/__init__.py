@@ -205,6 +205,7 @@ class Connection:
         item_id: str,
         container: str | None = None,
         audio_codec: str | None = None,
+        transcoding_container: str | None = None,
         max_streaming_bitrate: int = 140000000,
     ) -> str:
         """Given a TrackId, return a URL to stream from."""
@@ -219,6 +220,9 @@ class Connection:
 
         if audio_codec:
             params["AudioCodec"] = audio_codec
+
+        if transcoding_container:
+            params["TranscodingContainer"] = transcoding_container
 
         return self._build_url(f"/Audio/{item_id}/universal", params)
 
