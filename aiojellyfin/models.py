@@ -1,29 +1,39 @@
 """Jellyfin API models."""
 
-from typing import Generic, Required, TypedDict, TypeVar
+from dataclasses import dataclass
+from typing import Annotated, Generic, Sequence, TypeVar
+
+from mashumaro.mixins.json import DataClassJSONMixin
+from mashumaro.config import BaseConfig
+from mashumaro.types import Discriminator
 
 from .const import ImageType, ItemType, MediaProtocol, MediaSourceType
 
 
-class MediaStream(TypedDict, total=False):
+class JellyfinConfig(BaseConfig):
+
+    forbid_extra_keys = False
+
+
+@dataclass(kw_only=True)
+class MediaStream(DataClassJSONMixin):
     """Information about a Jellyfin stream."""
 
+    class Config(BaseConfig):
+        discriminator = Discriminator(
+            field="Type",
+            include_subtypes=True,
+        )
+
     Codec: str
-    CodecTag: str | None
-    Language: str | None
     TimeBase: str | None
-    AudioSpacialFormat: str | None
-    DisplayTitle: str | None
+    AudioSpacialFormat: str | None = None
     IsInterlaced: bool | None
     IsAVC: bool | None
-    ChannelLayout: str | None
-    BitRate: int | None
-    Channels: int
-    SampleRate: int | None
     IsDefault: bool | None
     IsForced: bool | None
     IsHearingImpaired: bool | None
-    Profile: str | None
+    Profile: str | None = None
     Type: str | None
     Index: int | None
     IsExternal: bool | None
@@ -31,14 +41,32 @@ class MediaStream(TypedDict, total=False):
     SupportsExternalStream: bool | None
     Level: bool | None
 
+@dataclass(kw_only=True)
+class AudioMediaStream(MediaStream):
+    Type = "Audio"
 
-class MediaSource(TypedDict, total=False):
+    CodecTag: str | None = None     
+    Language: str | None = None
+    DisplayTitle: str
+    ChannelLayout: str
+    BitRate: int
+    Channels: int
+    SampleRate: int
+
+@dataclass(kw_only=True)
+class EmbeddedImageMediaStream(MediaStream):
+    Type = "EmbeddedImage"
+
+
+@dataclass(kw_only=True)
+class MediaSource(DataClassJSONMixin):
     """Information about a Jellyfin media source."""
+
+    Config = JellyfinConfig
 
     Protocol: MediaProtocol
     Id: str | None
     Path: str
-    EncoderPath: str | None
     Type: MediaSourceType
     Container: str | None
     Size: int | None
@@ -46,88 +74,116 @@ class MediaSource(TypedDict, total=False):
     SupportsDirectPlay: bool | None
     SupportsDirectStream: bool | None
     SupportsTranscoding: bool | None
-    MediaStreams: list[MediaStream] | None
+    MediaStreams: Sequence[MediaStream] | None
 
 
-class ArtistItem(TypedDict):
+@dataclass(kw_only=True)
+class ArtistItem:
     """Information about a relationship between media and an artist."""
+
+    Config = JellyfinConfig
 
     Id: str
     Name: str
 
 
-class UserData(TypedDict, total=False):
+@dataclass(kw_only=True)
+class UserData:
     """Metadata that is specific to the logged in user, like favorites."""
+
+    Config = JellyfinConfig
 
     IsFavorite: bool
 
 
-class MediaLibrary(TypedDict, total=False):
+@dataclass(kw_only=True)
+class MediaLibrary:
     """JSON data describing a single media library."""
 
-    Id: Required[str]
-    Name: Required[str]
+    Config = JellyfinConfig
+
+    Id: str
+    Name: str
     CollectionType: str
 
 
-class MediaLibraries(TypedDict):
+@dataclass(kw_only=True)
+class MediaLibraries:
     """JSON data describing a collection of media libraries."""
+
+    Config = JellyfinConfig
 
     Items: list[MediaLibrary]
     TotalRecordCount: int
     StartIndex: int
 
 
-class MediaItem(TypedDict, total=False):
+@dataclass(kw_only=True)
+class MediaItem(DataClassJSONMixin):
     """JSON data describing a single media item."""
 
-    Id: Required[str]
+    Config = JellyfinConfig
+
+    Id: str
     Type: ItemType
     Name: str
     MediaType: str
-    IndexNumber: int
     SortName: str
-    AlbumArtist: str
-    Overview: str
-    ProductionYear: int
     ProviderIds: dict[str, str]
-    CanDownload: bool
     RunTimeTicks: int
-    MediaStreams: list[MediaStream]
-    AlbumId: str
-    Album: str
-    ParentIndexNumber: int
-    ArtistItems: list[ArtistItem]
     ImageTags: dict[ImageType, str]
     BackdropImageTags: list[str]
     UserData: UserData
-    AlbumArtists: list[ArtistItem]
-    MediaSources: list[MediaSource]
-    NormalizationGain: int | None
-
+    Overview: str | None = None
+    IndexNumber: int | None = None
+    
 
 MediaItemT = TypeVar("MediaItemT", bound=MediaItem)
 
 
-class MediaItems(Generic[MediaItemT], TypedDict):
+@dataclass(kw_only=True)
+class MediaItems(Generic[MediaItemT], DataClassJSONMixin):
     """JSON data describing a collection of media items."""
+
+    Config = JellyfinConfig
 
     Items: list[MediaItemT]
     TotalRecordCount: int
     StartIndex: int
 
 
-class Artist(MediaItem, TypedDict, total=False):
+@dataclass(kw_only=True)
+class Artist(MediaItem):
     """JSON data describing a single artist."""
 
 
-class Album(MediaItem, TypedDict, total=False):
+@dataclass(kw_only=True)
+class Album(MediaItem):
     """JSON data describing a single album."""
 
+    CanDownload: bool | None = None
+    ProductionYear: int | None = None
+    ArtistItems: list[ArtistItem]
+    AlbumArtists: list[ArtistItem]
 
-class Track(MediaItem, TypedDict, total=False):
+
+@dataclass(kw_only=True)
+class Track(MediaItem):
     """JSON data describing a single track."""
 
+    AlbumId: str | None = None
+    Album: str | None = None
+    AlbumArtist: str | None = None
+    CanDownload: bool
+    ProductionYear: int | None = None
+    ParentIndexNumber: int
+    MediaSources: list[MediaSource]
+    MediaStreams: Sequence[MediaStream] | None
+    NormalizationGain: int | None = None
+    ArtistItems: list[ArtistItem]
+    AlbumArtists: list[ArtistItem]
 
-class Playlist(MediaItem, TypedDict, total=False):
+
+@dataclass(kw_only=True)
+class Playlist(MediaItem):
     """JSON data describing a single playlist."""

@@ -10,6 +10,7 @@ from aiojellyfin import Connection, ItemFields, NotFound, session
 from aiojellyfin.models import (
     MediaItems,
     MediaLibraries,
+    MediaLibrary,
     Track,
 )
 from aiojellyfin.session import SessionConfiguration
@@ -146,17 +147,17 @@ class TestConnection(Connection):
 
     async def get_media_folders(self, fields: str | None = None) -> MediaLibraries:
         """Fetch a list of media libraries."""
-        return {
-            "Items": [
-                {
-                    "Id": MUSIC_FOLDER,
-                    "Name": "Music",
-                    "CollectionType": "music",
-                }
+        return MediaLibraries(
+            Items=[
+                MediaLibrary(
+                    Id=MUSIC_FOLDER,
+                    Name="Music",
+                    CollectionType="music",
+                )
             ],
-            "TotalRecordCount": 1,
-            "StartIndex": 0,
-        }
+            TotalRecordCount=1,
+            StartIndex=0,
+        )
 
     async def get_suggested_tracks(self) -> MediaItems[Track]:
         """Return suggested tracks."""

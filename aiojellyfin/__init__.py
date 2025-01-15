@@ -61,13 +61,6 @@ class Connection:
         self._user_id = user_id
         self._access_token = access_token
 
-        # These will go away when we transition to dataclasses
-        self._artist_decoder = BasicDecoder(Artist)
-        self._album_decoder = BasicDecoder(Album)
-        self._track_decoder = BasicDecoder(Track)
-        self._tracks_decoder = BasicDecoder(MediaItems[Track])
-        self._playlist_decoder = BasicDecoder(Playlist)
-
         self.artists = ArtistQueryBuilder.setup(self._session)
         self.albums = AlbumQueryBuilder.setup(self._session)
         self.tracks = TrackQueryBuilder.setup(self._session)
@@ -83,7 +76,7 @@ class Connection:
 
     async def get_artist(self, artist_id: str) -> Artist:
         """Fetch all data for a single artist."""
-        artist = self._artist_decoder.decode(
+        artist = Artist.from_dict(
             await self._session.get_json(
                 f"/Users/{self._user_id}/Items/{artist_id}",
                 params={
@@ -91,13 +84,13 @@ class Connection:
                 },
             ),
         )
-        if artist["Type"] != ItemType.MusicArtist:
+        if artist.Type != ItemType.MusicArtist:
             raise NotFound(artist_id)
         return artist
 
     async def get_album(self, album_id: str) -> Album:
         """Fetch all data for a single album."""
-        album = self._album_decoder.decode(
+        album = Album.from_dict(
             await self._session.get_json(
                 f"/Users/{self._user_id}/Items/{album_id}",
                 params={
@@ -105,13 +98,13 @@ class Connection:
                 },
             )
         )
-        if album["Type"] != ItemType.MusicAlbum:
+        if album.Type != ItemType.MusicAlbum:
             raise NotFound(album_id)
         return album
 
     async def get_track(self, track_id: str) -> Track:
         """Fetch all data for a single track."""
-        track = self._track_decoder.decode(
+        track = Track.from_dict(
             await self._session.get_json(
                 f"/Users/{self._user_id}/Items/{track_id}",
                 params={
@@ -119,13 +112,13 @@ class Connection:
                 },
             ),
         )
-        if track["Type"] != ItemType.Audio:
+        if track.Type != ItemType.Audio:
             raise NotFound(track_id)
         return track
 
     async def get_playlist(self, playlist_id: str) -> Playlist:
         """Fetch all data for a single playlist."""
-        playlist = self._playlist_decoder.decode(
+        playlist = Playlist.from_dict(
             await self._session.get_json(
                 f"/Users/{self._user_id}/Items/{playlist_id}",
                 params={
@@ -133,13 +126,13 @@ class Connection:
                 },
             ),
         )
-        if playlist["Type"] != ItemType.Playlist:
+        if playlist.Type != ItemType.Playlist:
             raise NotFound(playlist_id)
         return playlist
 
     async def get_suggested_tracks(self) -> MediaItems[Track]:
         """Return suggested tracks."""
-        return self._tracks_decoder.decode(
+        return MediaItems[Track].from_dict(
             await self._session.get_json(
                 "/Items/Suggestions",
                 {
@@ -170,7 +163,7 @@ class Connection:
             f"/Items/{track_id}/Similar",
             params=params or {},
         )
-        return self._tracks_decoder.decode(resp)
+        return MediaItems[Track].from_dict(resp)
 
     def _build_url(self, url: str, params: dict[str, str | int]) -> str:
         assert url.startswith("/")
