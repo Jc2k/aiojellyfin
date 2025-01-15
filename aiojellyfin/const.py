@@ -152,6 +152,8 @@ class LocationType(StrEnum):
 
 
 class MediaProtocol(StrEnum):
+    """Media protocol."""
+
     File = "File"
     Http = "Http"
     Rtmp = "Rtmp"
@@ -162,6 +164,8 @@ class MediaProtocol(StrEnum):
 
 
 class MediaSourceType(StrEnum):
+    """Media source type."""
+
     Default = "Default"
     Grouping = "Grouping"
     Placeholder = "Placeholder"
