@@ -200,29 +200,80 @@ class Connection:
             return self._build_url(f"/Items/{item_id}/Images/{image_type!s}", params)
         return self._build_url(f"/Items/{item_id}/Images/{image_type!s}/{index}", params)
 
-    def audio_url(
+    def audio_url(  # noqa: PLR0913
         self,
         item_id: str,
+        media_source_id: str | None = None,
         container: str | None = None,
-        audio_codec: str | None = None,
-        transcoding_container: str | None = None,
         max_streaming_bitrate: int = 140000000,
+        max_audio_channels: int | None = None,
+        max_audio_sample_rate: int | None = None,
+        max_audio_bit_depth: int | None = None,
+        enable_remote_media: bool | None = None,
+        transcoding_codec: str | None = None,
+        transcoding_bit_rate: str | None = None,
+        transcoding_protocol: str | None = None,
+        transcoding_container: str | None = None,
+        transcoding_audio_channels: int | None = None,
+        start_time_ticks: int | None = None,
+        enable_audio_vbr_encoding: bool | None = None,
+        enable_redirection: bool | None = None,
+        break_on_non_key_frames: bool | None = None,
     ) -> str:
         """Given a TrackId, return a URL to stream from."""
         params: dict[str, str | int] = {
-            "UserId": self._user_id,
-            "DeviceId": self._session_config.device_id,
-            "MaxStreamingBitrate": max_streaming_bitrate,
+            "userId": self._user_id,
+            "deviceId": self._session_config.device_id,
+            "maxStreamingBitrate": max_streaming_bitrate,
         }
 
-        if container:
-            params["Container"] = container
+        # Filters for which stream to select
+        if media_source_id:
+            params["mediaSourceId"] = media_source_id
 
-        if audio_codec:
-            params["AudioCodec"] = audio_codec
+        if container:
+            params["container"] = container
+
+        if max_audio_channels:
+            params["maxAudioChannels"] = max_audio_channels
+
+        if max_audio_sample_rate:
+            params["maxAudioSampleRate"] = max_audio_sample_rate
+
+        if max_audio_bit_depth:
+            params["maxAudioBitDepth"] = max_audio_bit_depth
+
+        if enable_remote_media:
+            params["enableRemoteMedia"] = "true" if enable_remote_media else "false"
+
+        # Transcoding settings
+        if transcoding_codec:
+            params["audioCodec"] = transcoding_codec
+
+        if transcoding_bit_rate:
+            params["audioBitrate"] = transcoding_bit_rate
+
+        if transcoding_protocol:
+            params["transcodingProtocol"] = transcoding_protocol
 
         if transcoding_container:
-            params["TranscodingContainer"] = transcoding_container
+            params["transcodingContainer"] = transcoding_container
+
+        if transcoding_audio_channels:
+            params["transcodingAudioChannels"] = str(transcoding_audio_channels)
+
+        if start_time_ticks:
+            params["startTimeTicks"] = str(start_time_ticks)
+
+        if enable_audio_vbr_encoding:
+            params["enableAudioVbrEncoding"] = "true" if enable_audio_vbr_encoding else "false"
+
+        # Misc settings
+        if enable_redirection:
+            params["enableRedirection"] = "true" if enable_redirection else "false"
+
+        if break_on_non_key_frames:
+            params["breakOnNonKeyFrames"] = "true" if break_on_non_key_frames else "false"
 
         return self._build_url(f"/Audio/{item_id}/universal", params)
 
