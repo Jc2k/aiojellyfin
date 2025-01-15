@@ -2,20 +2,51 @@
 
 from typing import Generic, Required, TypedDict, TypeVar
 
-from .const import ImageType, ItemType
+from .const import ImageType, ItemType, MediaProtocol, MediaSourceType
 
 
 class MediaStream(TypedDict, total=False):
     """Information about a Jellyfin stream."""
 
-    Channels: int
     Codec: str
+    CodecTag: str | None
+    Language: str | None
+    TimeBase: str | None
+    AudioSpacialFormat: str | None
+    DisplayTitle: str | None
+    IsInterlaced: bool | None
+    IsAVC: bool | None
+    ChannelLayout: str | None
+    BitRate: int | None
+    Channels: int
+    SampleRate: int | None
+    IsDefault: bool | None
+    IsForced: bool | None
+    IsHearingImpaired: bool | None
+    Profile: str | None
+    Type: str | None
+    Index: int | None
+    IsExternal: bool | None
+    IsTextSubtitleStream: bool | None
+    SupportsExternalStream: bool | None
+    Level: bool | None
 
 
 class MediaSource(TypedDict, total=False):
     """Information about a Jellyfin media source."""
 
+    Protocol: MediaProtocol
+    Id: str | None
     Path: str
+    EncoderPath: str | None
+    Type: MediaSourceType
+    Container: str | None
+    Size: int | None
+    Name: str | None
+    SupportsDirectPlay: bool | None
+    SupportsDirectStream: bool | None
+    SupportsTranscoding: bool | None
+    MediaStreams: list[MediaStream] | None
 
 
 class ArtistItem(TypedDict):
@@ -72,6 +103,7 @@ class MediaItem(TypedDict, total=False):
     UserData: UserData
     AlbumArtists: list[ArtistItem]
     MediaSources: list[MediaSource]
+    NormalizationGain: int | None
 
 
 MediaItemT = TypeVar("MediaItemT", bound=MediaItem)

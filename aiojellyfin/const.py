@@ -149,3 +149,19 @@ class LocationType(StrEnum):
     Remote = "Remote"
     Virtual = "Virtual"
     Offline = "Offline"
+
+
+class MediaProtocol(StrEnum):
+    File = "File"
+    Http = "Http"
+    Rtmp = "Rtmp"
+    Rtsp = "Rtsp"
+    Udp = "Udp"
+    Rtp = "Rtp"
+    Ftp = "Ftp"
+
+
+class MediaSourceType(StrEnum):
+    Default = "Default"
+    Grouping = "Grouping"
+    Placeholder = "Placeholder"
