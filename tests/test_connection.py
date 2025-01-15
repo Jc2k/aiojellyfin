@@ -147,12 +147,12 @@ async def test_early_break_tracks(connection: Connection) -> None:
 async def test_similar_tracks(connection: Connection) -> None:
     """Make sure we can get similar tracks."""
     tracks = await connection.get_similar_tracks("54918f75ee8f6c8b8dc5efd680644f29")
-    assert len(tracks.Items) == 1
-    assert tracks.Items[0].name == "11 Thrown Away"
+    assert len(tracks.items) == 1
+    assert tracks.items[0].name == "11 Thrown Away"
 
 
 async def test_get_suggestions(connection: Connection) -> None:
     """Make sure we can get suggestions."""
     tracks = await connection.get_suggested_tracks()
-    assert len(tracks.Items) == 1
-    assert tracks.Items[0].name == "11 Thrown Away"
+    assert len(tracks.items) == 1
+    assert tracks.items[0].name == "11 Thrown Away"

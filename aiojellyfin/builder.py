@@ -144,16 +144,16 @@ class ItemQueryBuilder(Generic[MediaItemT]):
         response = await request.request()
         offset = 0
 
-        while offset < response.TotalRecordCount:
+        while offset < response.total_record_count:
             offset += page_size
             next_response = asyncio.create_task(request.start_index(offset).request())
 
-            for obj in response.Items:
+            for obj in response.items:
                 yield obj
 
             response = await next_response
 
-        for obj in response.Items:
+        for obj in response.items:
             yield obj
 
 

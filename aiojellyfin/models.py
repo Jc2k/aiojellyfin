@@ -194,11 +194,18 @@ MediaItemT = TypeVar("MediaItemT", bound=MediaItem)
 class MediaItems(Generic[MediaItemT], DataClassJSONMixin):
     """JSON data describing a collection of media items."""
 
-    Config = JellyfinConfig
+    class Config(BaseConfig):
+        """Config for mashumaro."""
 
-    Items: list[MediaItemT]
-    TotalRecordCount: int
-    StartIndex: int
+        aliases = {
+            "items": "Items",
+            "total_record_count": "TotalRecordCount",
+            "start_index": "StartIndex",
+        }
+
+    items: list[MediaItemT]
+    total_record_count: int
+    start_index: int
 
 
 @dataclass(kw_only=True)
