@@ -2,6 +2,15 @@
 
 
 
+## v0.12.0 (2025-01-15)
+
+### Feature
+
+* feat: expose all audio_url settings ([`d2b880c`](https://github.com/Jc2k/aiojellyfin/commit/d2b880c926e37c5e663993f451e2bc5e59a12991))
+
+* feat: add options for transcoding ([`6ee2153`](https://github.com/Jc2k/aiojellyfin/commit/6ee21533ef6cf1a77440d2f60ed8b82484a39460))
+
+
 ## v0.11.2 (2025-01-09)
 
 ### Fix
