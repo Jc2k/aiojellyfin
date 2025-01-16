@@ -70,13 +70,26 @@ class AudioMediaStream(MediaStream):
 
     Type = "Audio"
 
-    CodecTag: str | None = None
-    Language: str | None = None
-    DisplayTitle: str
-    ChannelLayout: str
-    BitRate: int
-    Channels: int
-    SampleRate: int
+    class Config(BaseConfig):
+        """Mashumaro configuration."""
+
+        aliases = {
+            "codec_tag": "CodecTag",
+            "language": "Language",
+            "display_title": "DisplayTitle",
+            "channel_layout": "ChannelLayout",
+            "bit_rate": "BitRate",
+            "channels": "Channels",
+            "sample_rate": "SampleRate",
+        }
+
+    codec_tag: str | None = None
+    language: str | None = None
+    display_title: str
+    channel_layout: str
+    bit_rate: int
+    channels: int
+    sample_rate: int
 
 
 @dataclass(kw_only=True)
