@@ -17,7 +17,8 @@ class MediaStream(TypedDict, total=False):
     IsInterlaced: bool | None
     IsAVC: bool | None
     ChannelLayout: str | None
-    BitRate: int | None
+    BitRate: int
+    BitDepth: int
     Channels: int
     SampleRate: int | None
     IsDefault: bool | None
