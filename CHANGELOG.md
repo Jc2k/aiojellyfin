@@ -2,6 +2,13 @@
 
 
 
+## v0.14.0 (2025-01-19)
+
+### Feature
+
+* feat: add BitDepth to models ([`9ed7aa1`](https://github.com/Jc2k/aiojellyfin/commit/9ed7aa1b7f749c47b7b5dd087c6e7fddf8fee704))
+
+
 ## v0.13.0 (2025-01-16)
 
 ### Feature
