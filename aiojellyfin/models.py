@@ -21,7 +21,6 @@ class JellyfinConfig(BaseConfig):
 class MediaStream(DataClassJSONMixin):
     """Information about a Jellyfin stream."""
 
-<<<<<<< HEAD
     class Config(BaseConfig):
         """Mashumaro configuration."""
 
