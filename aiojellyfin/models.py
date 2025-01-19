@@ -21,6 +21,7 @@ class JellyfinConfig(BaseConfig):
 class MediaStream(DataClassJSONMixin):
     """Information about a Jellyfin stream."""
 
+<<<<<<< HEAD
     class Config(BaseConfig):
         """Mashumaro configuration."""
 
@@ -45,6 +46,7 @@ class MediaStream(DataClassJSONMixin):
             "is_text_subtitle_stream": "IsTextSubtitleStream",
             "supports_external_stream": "SupportsExternalStream",
             "level": "Level",
+            "bit_depth": "BitDepth",
         }
 
     codec: str
@@ -62,6 +64,7 @@ class MediaStream(DataClassJSONMixin):
     is_text_subtitle_stream: bool | None
     supports_external_stream: bool | None
     level: bool | None
+    bit_depth: int | None = None
 
 
 @dataclass(kw_only=True)

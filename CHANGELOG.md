@@ -2,6 +2,17 @@
 
 
 
+## v0.13.0 (2025-01-16)
+
+### Feature
+
+* feat: make more mediastream metadata available ([`5a4a55e`](https://github.com/Jc2k/aiojellyfin/commit/5a4a55ecfa8e5a98c5ecc50727142f1458dd258d))
+
+### Fix
+
+* fix: missing docstring ([`df5d109`](https://github.com/Jc2k/aiojellyfin/commit/df5d109f679e081d5cd7b8b1fa1a09ce943b15b8))
+
+
 ## v0.12.0 (2025-01-15)
 
 ### Feature
