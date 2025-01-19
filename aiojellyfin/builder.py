@@ -5,8 +5,6 @@ import copy
 from collections.abc import AsyncGenerator
 from typing import Generic, Self
 
-from mashumaro.codecs.basic import BasicDecoder
-
 from .const import ItemFields, ItemFilter, ItemType, LocationType
 from .models import Album, Artist, MediaItems, MediaItemT, Playlist, Track
 from .session import Session
@@ -18,17 +16,14 @@ class ItemQueryBuilder(Generic[MediaItemT]):
     endpoint = "/Items"
 
     _params: dict[str, str]
-    _decoder: BasicDecoder[MediaItems[MediaItemT]]
 
     def __init__(
         self,
         session: Session,
-        decoder: BasicDecoder[MediaItems[MediaItemT]],
         endpoint: str,
         params: dict[str, str],
     ):
         """Initialise the class."""
-        self._decoder = decoder
         self._session = session
         self.endpoint = endpoint
         self._params = params
@@ -36,13 +31,11 @@ class ItemQueryBuilder(Generic[MediaItemT]):
     @classmethod
     def create(cls, session: Session) -> Self:
         """Create a new query builder instance."""
-        decoder = BasicDecoder(MediaItems[MediaItemT])
-        return cls(session, decoder, cls.endpoint, {})
+        return cls(session, cls.endpoint, {})
 
     def _clone(self) -> Self:
         return self.__class__(
             self._session,
-            self._decoder,
             self.endpoint,
             copy.deepcopy(self._params),
         )
@@ -143,7 +136,7 @@ class ItemQueryBuilder(Generic[MediaItemT]):
     async def request(self) -> MediaItems[MediaItemT]:
         """Request a list of records matching this query."""
         response = await self._session.get_json(self.endpoint, params=self.to_params())
-        return self._decoder.decode(response)
+        return MediaItems[MediaItemT].from_dict(response)
 
     async def stream(self, page_size: int = 100) -> AsyncGenerator[MediaItemT, None]:
         """Stream all records matching this query with automatic greedy pagination."""
@@ -151,16 +144,16 @@ class ItemQueryBuilder(Generic[MediaItemT]):
         response = await request.request()
         offset = 0
 
-        while offset < response["TotalRecordCount"]:
+        while offset < response.total_record_count:
             offset += page_size
             next_response = asyncio.create_task(request.start_index(offset).request())
 
-            for obj in response["Items"]:
+            for obj in response.items:
                 yield obj
 
             response = await next_response
 
-        for obj in response["Items"]:
+        for obj in response.items:
             yield obj
 
 
