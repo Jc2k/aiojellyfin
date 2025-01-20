@@ -2,6 +2,13 @@
 
 
 
+## v0.14.1 (2025-01-20)
+
+### Fix
+
+* fix: the field SampleRate is always int if present ([`4d9c964`](https://github.com/Jc2k/aiojellyfin/commit/4d9c964e64cdc8e54334b80712bae3addd211a03))
+
+
 ## v0.14.0 (2025-01-19)
 
 ### Feature
