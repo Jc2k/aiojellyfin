@@ -20,7 +20,7 @@ class MediaStream(TypedDict, total=False):
     BitRate: int
     BitDepth: int
     Channels: int
-    SampleRate: int | None
+    SampleRate: int
     IsDefault: bool | None
     IsForced: bool | None
     IsHearingImpaired: bool | None
